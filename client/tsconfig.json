@@ -30,7 +30,8 @@
       "@routes/*": ["routes/*"],
       "@store/*": ["store/*"],
       "@utils/*": ["utils/*"],
-      "@pages/*": ["pages/*"]
+      "@pages/*": ["pages/*"],
+      "@page-sections/*": ["pages/page-sections/*"]
     }
   },
   "references": [{ "path": "./tsconfig.node.json" }],
