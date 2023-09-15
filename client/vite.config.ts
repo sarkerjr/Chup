@@ -14,7 +14,7 @@ export default defineConfig({
       output: {
         format: 'es',
         strict: false,
-        entryFileNames: 'index.js',
+        entryFileNames: 'index.ts',
         dir: 'dist/',
       },
     },
