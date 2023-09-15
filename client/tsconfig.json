@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "target": "ESNext",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "allowJs": false,
+    "useDefineForClassFields": true,
+    "strict": true,
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "noImplicitAny": false,
+    "esModuleInterop": false,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "noUnusedLocals": false, // used to check if any variable is not used
+    "noUnusedParameters": false, // used to check if any parameter is not used
+    "importHelpers": true,
+    "jsx": "react-jsx",
+    "strictNullChecks": true,
+    "baseUrl": "src",
+    "paths": {
+      "@/*": ["*"],
+      "@configs": ["configs"],
+      "@components/*": ["components/*"],
+      "@hooks/*": ["hooks/*"],
+      "@layouts/*": ["layouts/*"],
+      "@routes/*": ["routes/*"],
+      "@store/*": ["store/*"],
+      "@utils/*": ["utils/*"],
+      "@pages/*": ["pages/*"]
+    }
+  },
+  "references": [{ "path": "./tsconfig.node.json" }],
+  "include": ["src"],
+  "exclude": ["node_modules", "build", "dist"]
+}
