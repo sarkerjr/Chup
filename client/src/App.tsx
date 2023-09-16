@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { io } from 'socket.io-client';
 
 // project imports
-import Chat from './pages/chat';
+import Chat from './pages/chats';
 
 const socket = io('http://localhost:8080');
 
