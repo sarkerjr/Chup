@@ -31,7 +31,7 @@ interface MainCardProps {
 const MainCard = forwardRef(
   (
     {
-      border = true,
+      border = false,
       boxShadow,
       children,
       content = true,
@@ -56,11 +56,6 @@ const MainCard = forwardRef(
         sx={{
           border: border ? '1px solid' : 'none',
           borderColor: theme.palette.primary[200] + 75,
-          ':hover': {
-            boxShadow: boxShadow
-              ? shadow ?? '0 2px 14px 0 rgb(32 40 45 / 8%)'
-              : 'inherit',
-          },
           ...sx,
         }}
       >

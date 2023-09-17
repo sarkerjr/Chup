@@ -1,18 +1,13 @@
-import { useEffect } from 'react';
-import { io } from 'socket.io-client';
+// import { useEffect } from 'react';
+// import { io } from 'socket.io-client';
 
 // project imports
+import './App.css';
 import Chat from './pages/chats';
 
-const socket = io('http://localhost:8080');
+// const socket = io('http://localhost:8080');
 
 const App = () => {
-  useEffect(() => {
-    socket.on('connect', () => {
-      console.log(`connected user id: ${socket.id}`);
-    });
-  }, []);
-
   return <Chat />;
 };
 
