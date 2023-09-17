@@ -3,12 +3,13 @@
 
 // project imports
 import './App.css';
-import Chat from './pages/chats';
+
+import Routes from '@/routes';
 
 // const socket = io('http://localhost:8080');
 
 const App = () => {
-  return <Chat />;
+  return <Routes />;
 };
 
 export default App;
