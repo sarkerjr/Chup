@@ -23,6 +23,7 @@
     "baseUrl": "src",
     "paths": {
       "@/*": ["*"],
+      "@assets": ["assets"],
       "@configs": ["configs"],
       "@components/*": ["components/*"],
       "@hooks/*": ["hooks/*"],
@@ -30,7 +31,8 @@
       "@routes/*": ["routes/*"],
       "@store/*": ["store/*"],
       "@utils/*": ["utils/*"],
-      "@pages/*": ["pages/*"]
+      "@pages/*": ["pages/*"],
+      "@page-sections/*": ["pages/page-sections/*"]
     }
   },
   "references": [{ "path": "./tsconfig.node.json" }],
