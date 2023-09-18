@@ -139,12 +139,15 @@ const Chats: FC = () => {
   if (!user) return <Typography>Loading...</Typography>;
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex', height: '92dvh' }}>
+      {/* Chat Drawer Section */}
       <ChatDrawer
         openChatDrawer={openChatDrawer}
         handleDrawerOpen={handleDrawerOpen}
         setUser={setUser}
       />
+
+      {/* Main Chat Section */}
       <Main theme={theme} open={openChatDrawer}>
         <Grid container spacing={gridSpacing}>
           <Grid

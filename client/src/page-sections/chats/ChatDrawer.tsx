@@ -67,13 +67,10 @@ const ChatDrawer: React.FC<ChatDrawerProps> = ({
         flexShrink: 0,
         zIndex: { xs: 1100, lg: 0 },
         '& .MuiDrawer-paper': {
-          height: matchDownLG ? '100%' : 'auto',
+          height: '100%',
           width: drawerWidth,
           boxSizing: 'border-box',
           position: 'relative',
-          border: 'none',
-          borderRadius: matchDownLG ? 'none' : `8px`,
-          boxShadow: '1px 0px 2px 0px #A6B0C3',
         },
       }}
       variant={matchDownLG ? 'temporary' : 'persistent'}
@@ -86,94 +83,110 @@ const ChatDrawer: React.FC<ChatDrawerProps> = ({
         <MainCard
           sx={{
             bgcolor: matchDownLG ? 'transparent' : drawerBG,
+            height: '100%',
           }}
           content={false}
         >
-          <Box sx={{ p: 3, pb: 2 }}>
-            <Grid container spacing={gridSpacing}>
-              <Grid item xs={12}>
-                <Grid
-                  container
-                  spacing={2}
-                  alignItems="center"
-                  sx={{ flexWrap: 'nowrap' }}
-                >
-                  <Grid item>
-                    <UserAvatar
-                      user={{
-                        online_status: status,
-                        avatar: 'avatar-5.png',
-                        name: 'User 1',
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs zeroMinWidth>
-                    <Typography align="left" fontSize="16px" fontWeight="bold">
-                      Anik Sarker
-                    </Typography>
-                  </Grid>
-                  <Grid item>
-                    <IconButton onClick={handleClickRightMenu} size="large">
-                      <ExpandMoreIcon />
-                    </IconButton>
-                    <Menu
-                      id="simple-menu"
-                      anchorEl={anchorEl}
-                      keepMounted
-                      open={Boolean(anchorEl)}
-                      onClose={handleCloseRightMenu}
-                      anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'right',
-                      }}
-                      transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right',
-                      }}
-                    >
-                      <MenuItem onClick={handleRightMenuItemClick('available')}>
-                        <AvatarStatus status="available" mr={1} />
-                        Available
-                      </MenuItem>
-                      <MenuItem
-                        onClick={handleRightMenuItemClick('do_not_disturb')}
-                      >
-                        <AvatarStatus status="do_not_disturb" mr={1} />
-                        Do not disturb
-                      </MenuItem>
-                      <MenuItem onClick={handleRightMenuItemClick('offline')}>
-                        <AvatarStatus status="offline" mr={1} />
-                        Offline
-                      </MenuItem>
-                    </Menu>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12}>
-                <OutlinedInput
-                  fullWidth
-                  id="input-search-header"
-                  placeholder="Search Mail"
-                  startAdornment={
-                    <InputAdornment position="start">
-                      <SearchTwoToneIcon fontSize="small" />
-                    </InputAdornment>
-                  }
-                />
-              </Grid>
-            </Grid>
-          </Box>
           <Box
             sx={{
-              pt: 0,
-              overflowX: 'hidden',
-              height: matchDownLG
-                ? 'calc(100vh - 190px)'
-                : 'calc(100vh - 445px)',
-              minHeight: matchDownLG ? 0 : 520,
+              display: 'flex',
+              flexDirection: 'column',
+              height: '100%',
             }}
           >
-            <UserList setUser={setUser} />
+            {/* Header Section */}
+            <Box sx={{ p: 3, pb: 2 }}>
+              <Grid container spacing={gridSpacing}>
+                <Grid item xs={12}>
+                  <Grid
+                    container
+                    spacing={2}
+                    alignItems="center"
+                    sx={{ flexWrap: 'nowrap' }}
+                  >
+                    <Grid item>
+                      <UserAvatar
+                        user={{
+                          online_status: status,
+                          avatar: 'avatar-5.png',
+                          name: 'User 1',
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs zeroMinWidth>
+                      <Typography
+                        align="left"
+                        fontSize="16px"
+                        fontWeight="bold"
+                      >
+                        Anik Sarker
+                      </Typography>
+                    </Grid>
+                    <Grid item>
+                      <IconButton onClick={handleClickRightMenu} size="large">
+                        <ExpandMoreIcon />
+                      </IconButton>
+                      <Menu
+                        id="simple-menu"
+                        anchorEl={anchorEl}
+                        keepMounted
+                        open={Boolean(anchorEl)}
+                        onClose={handleCloseRightMenu}
+                        anchorOrigin={{
+                          vertical: 'bottom',
+                          horizontal: 'right',
+                        }}
+                        transformOrigin={{
+                          vertical: 'top',
+                          horizontal: 'right',
+                        }}
+                      >
+                        <MenuItem
+                          onClick={handleRightMenuItemClick('available')}
+                        >
+                          <AvatarStatus status="available" mr={1} />
+                          Available
+                        </MenuItem>
+                        <MenuItem
+                          onClick={handleRightMenuItemClick('do_not_disturb')}
+                        >
+                          <AvatarStatus status="do_not_disturb" mr={1} />
+                          Do not disturb
+                        </MenuItem>
+                        <MenuItem onClick={handleRightMenuItemClick('offline')}>
+                          <AvatarStatus status="offline" mr={1} />
+                          Offline
+                        </MenuItem>
+                      </Menu>
+                    </Grid>
+                  </Grid>
+                </Grid>
+                <Grid item xs={12}>
+                  <OutlinedInput
+                    fullWidth
+                    size="small"
+                    id="input-search-header"
+                    placeholder="Search Mail"
+                    startAdornment={
+                      <InputAdornment position="start">
+                        <SearchTwoToneIcon fontSize="small" />
+                      </InputAdornment>
+                    }
+                  />
+                </Grid>
+              </Grid>
+            </Box>
+
+            {/* User List Section */}
+            <Box
+              sx={{
+                pt: 0,
+                overflowX: 'hidden',
+                minHeight: matchDownLG ? 0 : 520,
+              }}
+            >
+              <UserList setUser={setUser} />
+            </Box>
           </Box>
         </MainCard>
       )}

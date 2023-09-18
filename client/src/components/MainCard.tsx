@@ -1,5 +1,4 @@
 import { forwardRef, ReactNode, Ref } from 'react';
-import { useTheme } from '@mui/material/styles';
 import {
   Card,
   CardContent,
@@ -47,18 +46,8 @@ const MainCard = forwardRef(
     }: MainCardProps,
     ref: Ref<HTMLDivElement>
   ) => {
-    const theme = useTheme();
-
     return (
-      <Card
-        ref={ref}
-        {...others}
-        sx={{
-          border: border ? '1px solid' : 'none',
-          borderColor: theme.palette.primary[200] + 75,
-          ...sx,
-        }}
-      >
+      <Card ref={ref} {...others} sx={{ ...sx }}>
         {/* card header and action */}
         {!darkTitle && title && (
           <CardHeader sx={headerSX} title={title} action={action} />
