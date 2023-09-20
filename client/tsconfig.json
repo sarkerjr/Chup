@@ -23,8 +23,8 @@
     "baseUrl": "src",
     "paths": {
       "@/*": ["*"],
-      "@assets": ["assets"],
-      "@configs": ["configs"],
+      "@assets/*": ["assets/*"],
+      "@configs/*": ["configs/*"],
       "@components/*": ["components/*"],
       "@hooks/*": ["hooks/*"],
       "@layouts/*": ["layouts/*"],
