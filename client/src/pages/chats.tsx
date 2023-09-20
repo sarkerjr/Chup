@@ -68,6 +68,11 @@ const Chats: FC = () => {
 
   const dispatch = useDispatch();
 
+  // change the background of body for this page
+  useEffect(() => {
+    document.body.style.backgroundColor = '#e0f2fc';
+  });
+
   // set chat details page open when user is selected from sidebar
   const [emailDetails, setEmailDetails] = useState<boolean>(false);
   const handleUserChange = () => {
