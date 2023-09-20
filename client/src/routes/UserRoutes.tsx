@@ -6,7 +6,7 @@ const UserRoutes = {
   path: '/',
   children: [
     {
-      path: '/',
+      path: '/chat',
       element: <Chats />,
     },
   ],
