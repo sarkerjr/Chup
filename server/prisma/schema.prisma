@@ -1,0 +1,19 @@
+generator client {
+  provider                  = "prisma-client-js"
+  binaryTargets             = ["native"]
+  uncheckedRelationalInputs = "true"
+  uncheckedScalarInputs     = "true"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
