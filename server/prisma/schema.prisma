@@ -20,18 +20,18 @@ model User {
 }
 
 model Profile {
-  id           String        @id @default(auto()) @map("_id") @db.ObjectId
-  firstName    String
-  lastName     String
-  gender       GENDER
-  phoneNumber  String?
-  profilePhoto String?
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  id                 String               @id @default(auto()) @map("_id") @db.ObjectId
+  firstName          String
+  lastName           String
+  gender             GENDER
+  phoneNumber        String?
+  profilePhoto       String?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
   // ---------------------------------------------------
-  userId       String        @unique @map("userId") @db.ObjectId
-  user         User          @relation(fields: [userId], references: [id])
-  GroupMember  GroupMember[]
+  userId             String               @unique @map("userId") @db.ObjectId
+  user               User                 @relation(fields: [userId], references: [id])
+  ConversationMember ConversationMember[]
 }
 
 model Message {
@@ -46,16 +46,17 @@ model Message {
 }
 
 model Conversation {
-  id          String        @id @default(auto()) @map("_id") @db.ObjectId
-  name        String?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  id                 String               @id @default(auto()) @map("_id") @db.ObjectId
+  name               String?
+  isGroup            Boolean              @default(false)
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
   // ---------------------------------------------------
-  message     Message[]
-  GroupMember GroupMember[]
+  message            Message[]
+  ConversationMember ConversationMember[]
 }
 
-model GroupMember {
+model ConversationMember {
   id            String       @id @default(auto()) @map("_id") @db.ObjectId
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
