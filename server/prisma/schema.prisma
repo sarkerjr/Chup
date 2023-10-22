@@ -13,7 +13,62 @@ datasource db {
 model User {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   email     String   @unique
-  name      String?
+  password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  Profile   Profile?
+}
+
+model Profile {
+  id                 String               @id @default(auto()) @map("_id") @db.ObjectId
+  firstName          String
+  lastName           String
+  gender             GENDER
+  phoneNumber        String?
+  profilePhoto       String?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  // ---------------------------------------------------
+  userId             String               @unique @map("userId") @db.ObjectId
+  user               User                 @relation(fields: [userId], references: [id])
+  ConversationMember ConversationMember[]
+}
+
+model Message {
+  id             String        @id @default(auto()) @map("_id") @db.ObjectId
+  fromId         String
+  messageText    String
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  // ---------------------------------------------------
+  conversationId String        @db.ObjectId
+  Conversation   Conversation? @relation(fields: [conversationId], references: [id])
+}
+
+model Conversation {
+  id                 String               @id @default(auto()) @map("_id") @db.ObjectId
+  name               String?
+  isGroup            Boolean              @default(false)
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  // ---------------------------------------------------
+  message            Message[]
+  ConversationMember ConversationMember[]
+}
+
+model ConversationMember {
+  id            String       @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  // ---------------------------------------------------
+  profileId     String       @map("profileId") @db.ObjectId
+  profile       Profile      @relation(fields: [profileId], references: [id])
+  coversationId String       @map("coversationId") @db.ObjectId
+  coversation   Conversation @relation(fields: [coversationId], references: [id])
+}
+
+enum GENDER {
+  MALE
+  FEMALE
+  OTHERS
 }
