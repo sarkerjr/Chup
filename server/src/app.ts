@@ -7,6 +7,9 @@ import cors from './utils/cors';
 import helmet from './utils/helmet';
 import morgan from './utils/morgan';
 
+import errorHandler from '@/controllers/error.controllers';
+import InternalError from '@/utils/error-handling/InternalError';
+
 const app = express();
 
 /* express settings */
@@ -23,11 +26,13 @@ app.use(compression()); // compress to level -1
 // add public folder
 app.use(express.static('public'));
 
-// welcome route
-app.use('/', (req, res) => {
-  res.send('API is running!');
+// routes
+// app.use('/api', routes);
+
+app.use('*', (_req, _res, next) => {
+  next(new Error('Route not found!'));
 });
 
-// app.use('/api', routes);
+app.use(errorHandler);
 
 export default app;
