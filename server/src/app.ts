@@ -3,12 +3,11 @@ import express from 'express';
 import compression from 'compression';
 
 // project imports
-import cors from './utils/cors';
-import helmet from './utils/helmet';
-import morgan from './utils/morgan';
+import cors from '@/utils/cors';
+import helmet from '@/utils/helmet';
+import morgan from '@/utils/morgan';
 
-import errorHandler from '@/controllers/error.controllers';
-import InternalError from '@/utils/error-handling/InternalError';
+import errorHandler from '@/middleware/error-handler';
 
 const app = express();
 
