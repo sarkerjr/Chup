@@ -16,7 +16,8 @@ model User {
   password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  Profile   Profile?
+  // ---------------------------------------------------
+  profile   Profile?
 }
 
 model Profile {
@@ -31,7 +32,7 @@ model Profile {
   // ---------------------------------------------------
   userId             String               @unique @map("userId") @db.ObjectId
   user               User                 @relation(fields: [userId], references: [id])
-  ConversationMember ConversationMember[]
+  conversationMember ConversationMember[]
 }
 
 model Message {
@@ -42,7 +43,7 @@ model Message {
   updatedAt      DateTime      @updatedAt
   // ---------------------------------------------------
   conversationId String        @db.ObjectId
-  Conversation   Conversation? @relation(fields: [conversationId], references: [id])
+  conversation   Conversation? @relation(fields: [conversationId], references: [id])
 }
 
 model Conversation {
@@ -53,7 +54,7 @@ model Conversation {
   updatedAt          DateTime             @updatedAt
   // ---------------------------------------------------
   message            Message[]
-  ConversationMember ConversationMember[]
+  conversationMember ConversationMember[]
 }
 
 model ConversationMember {
