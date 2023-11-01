@@ -5,9 +5,19 @@ import { User } from '@prisma/client';
  * Create a new user
  * @returns The created user
  */
-const createUser = async (data: Prisma.UserCreateInput): Promise<User> => {
+const createUser = async (
+  user: Prisma.UserCreateInput,
+  profile: Prisma.ProfileCreateInput
+): Promise<User> => {
   return await prisma.user.create({
-    data,
+    data: {
+      ...user,
+      profile: {
+        create: {
+          ...profile,
+        },
+      },
+    },
   });
 };
 

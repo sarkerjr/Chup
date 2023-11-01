@@ -6,10 +6,14 @@ import userService from 'services/user.services';
 /**
  * @description Create a new user
  */
-export const createUser = asyncHandler(async (req: Request, res: Response) => {
-  await userService.createUser(req.body);
-  return res.status(201).json({ message: 'User created sucessfully' });
-});
+export const createUserWithProfile = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { user, profile } = req.body;
+
+    await userService.createUser(user, profile);
+    return res.status(201).json({ message: 'User created sucessfully' });
+  }
+);
 
 /**
  * @description Get user by id
