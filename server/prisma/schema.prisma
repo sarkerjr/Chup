@@ -11,49 +11,54 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  Profile   Profile?
-}
-
-model Profile {
   id                 String               @id @default(auto()) @map("_id") @db.ObjectId
-  firstName          String
-  lastName           String
-  gender             GENDER
-  phoneNumber        String?
-  profilePhoto       String?
+  email              String               @unique
+  password           String
   createdAt          DateTime             @default(now())
   updatedAt          DateTime             @updatedAt
   // ---------------------------------------------------
-  userId             String               @unique @map("userId") @db.ObjectId
-  user               User                 @relation(fields: [userId], references: [id])
-  ConversationMember ConversationMember[]
+  profile            Profile?
+  conversationMember ConversationMember[]
+  message            Message[]
+}
+
+model Profile {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  firstName    String
+  lastName     String
+  gender       GENDER
+  phoneNumber  String?
+  profilePhoto String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  // ---------------------------------------------------
+  userId       String   @unique @map("userId") @db.ObjectId
+  user         User     @relation(fields: [userId], references: [id])
 }
 
 model Message {
-  id             String        @id @default(auto()) @map("_id") @db.ObjectId
-  fromId         String
+  id             String       @id @default(auto()) @map("_id") @db.ObjectId
   messageText    String
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
   // ---------------------------------------------------
-  conversationId String        @db.ObjectId
-  Conversation   Conversation? @relation(fields: [conversationId], references: [id])
+  conversationId String       @db.ObjectId
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+
+  senderId String @db.ObjectId
+  sender   User   @relation(fields: [senderId], references: [id])
 }
 
 model Conversation {
   id                 String               @id @default(auto()) @map("_id") @db.ObjectId
   name               String?
   isGroup            Boolean              @default(false)
+  lastMessageAt      DateTime             @default(now())
   createdAt          DateTime             @default(now())
   updatedAt          DateTime             @updatedAt
   // ---------------------------------------------------
   message            Message[]
-  ConversationMember ConversationMember[]
+  conversationMember ConversationMember[]
 }
 
 model ConversationMember {
@@ -61,10 +66,11 @@ model ConversationMember {
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
   // ---------------------------------------------------
-  profileId     String       @map("profileId") @db.ObjectId
-  profile       Profile      @relation(fields: [profileId], references: [id])
   coversationId String       @map("coversationId") @db.ObjectId
   coversation   Conversation @relation(fields: [coversationId], references: [id])
+
+  User   User?   @relation(fields: [userId], references: [id])
+  userId String? @db.ObjectId
 }
 
 enum GENDER {

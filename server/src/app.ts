@@ -7,6 +7,7 @@ import cors from '@/utils/cors';
 import helmet from '@/utils/helmet';
 import morgan from '@/utils/morgan';
 
+import routes from '@/routes';
 import errorHandler from '@/middleware/error-handler';
 
 const app = express();
@@ -26,7 +27,7 @@ app.use(compression()); // compress to level -1
 app.use(express.static('public'));
 
 // routes
-// app.use('/api', routes);
+app.use('/api', routes);
 
 app.use('*', (_req, _res, next) => {
   next(new Error('Route not found!'));
