@@ -20,11 +20,11 @@ export const createConversation = asyncHandler(
  */
 export const getConversation = asyncHandler(
   async (req: Request, res: Response) => {
-    const { senderId } = req.body;
+    const { userId } = req.body;
 
     const conversation = await conversationService.getConversation(
       req.params.id,
-      senderId
+      userId
     );
 
     if (conversation) {
@@ -39,8 +39,11 @@ export const getConversation = asyncHandler(
  * @description Get all conversations
  */
 export const getConversations = asyncHandler(
-  async (_req: Request, res: Response) => {
-    const conversations = await conversationService.getConversations();
+  async (req: Request, res: Response) => {
+    let { userId } = req.body;
+    const conversations = await conversationService.getConversations(
+      (userId = '656037e9ef6c2819e353328c')
+    );
     return res.json(conversations);
   }
 );
