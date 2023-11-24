@@ -1,5 +1,5 @@
 import { Prisma, prisma } from '@/utils/prisma';
-import { Conversation, ConversationMember } from '@prisma/client';
+import { Conversation } from '@prisma/client';
 
 /**
  * Create a new conversation
@@ -25,23 +25,9 @@ const createConversationWithMembers = async (
     const existingConversation = await prisma.conversation.findFirst({
       where: {
         AND: [
-          {
-            isGroup: false,
-          },
-          {
-            conversationMember: {
-              some: {
-                profileId: members[0],
-              },
-            },
-          },
-          {
-            conversationMember: {
-              some: {
-                profileId: members[1],
-              },
-            },
-          },
+          { isGroup: false },
+          { userIds: { has: members[0] } },
+          { userIds: { has: members[1] } },
         ],
       },
     });
@@ -49,31 +35,27 @@ const createConversationWithMembers = async (
     if (existingConversation) {
       return existingConversation;
     }
+
+    // if not exist, create new non-group conversation
+    return await prisma.conversation.create({
+      data: {
+        isGroup: false,
+        userIds: members,
+      },
+    });
   }
 
-  return await prisma.$transaction(async (tx) => {
-    const conversation = await tx.conversation.create({
-      data,
-    });
-
-    // Wait for all member creation promises to complete
-    await Promise.all(
-      members.map(async (member) => {
-        return tx.conversationMember.create({
-          data: {
-            profileId: member,
-            coversationId: conversation.id,
-          },
-        });
-      })
-    );
-
-    return conversation;
+  // create group conversation;
+  return await prisma.conversation.create({
+    data: {
+      ...data,
+      userIds: members,
+    },
   });
 };
 
 /**
- * Get a conversation by ID
+ * @description Get a conversation by its ID
  */
 const getConversation = async (id: string, senderId: string) => {
   const conversation = await prisma.conversation.findUnique({
@@ -84,12 +66,13 @@ const getConversation = async (id: string, senderId: string) => {
       id: true,
       name: true,
       isGroup: true,
-      conversationMember: {
+      lastMessageAt: true,
+      users: {
         select: {
           id: true,
+          email: true,
           profile: {
             select: {
-              id: true,
               firstName: true,
               lastName: true,
               gender: true,
@@ -105,21 +88,65 @@ const getConversation = async (id: string, senderId: string) => {
   // set conversation name according to receiver name
   if (conversation && !conversation.isGroup) {
     const receiver =
-      conversation.conversationMember[0].id === senderId
-        ? conversation.conversationMember[1]
-        : conversation.conversationMember[0];
+      conversation.users[0].id === senderId
+        ? conversation.users[1].profile
+        : conversation.users[0].profile;
 
-    conversation.name = `${receiver.profile.firstName} ${receiver.profile.lastName}`;
+    conversation.name = `${receiver?.firstName} ${receiver?.lastName}`;
   }
 
   return conversation;
 };
 
 /**
- * Get all conversations
+ * @description Get all conversations of a user
  */
-const getConversations = async (): Promise<Conversation[]> => {
-  return await prisma.conversation.findMany();
+const getConversations = async (userId: string) => {
+  const conversations = await prisma.conversation.findMany({
+    where: {
+      userIds: {
+        has: userId,
+      },
+    },
+    orderBy: {
+      lastMessageAt: 'desc',
+    },
+    select: {
+      id: true,
+      name: true,
+      isGroup: true,
+      lastMessageAt: true,
+      users: {
+        select: {
+          id: true,
+          email: true,
+          profile: {
+            select: {
+              firstName: true,
+              lastName: true,
+              gender: true,
+              phoneNumber: true,
+              profilePhoto: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  // set non-group conversation name according to receiver name
+  return conversations.map((conversation) => {
+    if (!conversation.isGroup) {
+      const receiver =
+        conversation.users[0].id === userId
+          ? conversation.users[1].profile
+          : conversation.users[0].profile;
+
+      conversation.name = `${receiver?.firstName} ${receiver?.lastName}`;
+    }
+
+    return conversation;
+  });
 };
 
 /**
