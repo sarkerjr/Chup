@@ -22,10 +22,12 @@ interface Inputs {
   password: string;
 }
 
-const schema = z.object({
+const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(15, 'Password must be at least 15 characters long!'),
 });
+
+type LoginSchema = z.infer<typeof loginSchema>;
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -34,8 +36,8 @@ const LoginForm = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
-    resolver: zodResolver(schema),
+  } = useForm<LoginSchema>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: '',
       password: '',
