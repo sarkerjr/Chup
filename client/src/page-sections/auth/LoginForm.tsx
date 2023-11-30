@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Link,
   Stack,
@@ -15,22 +17,49 @@ import {
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
-const LoginForm = () => {
-  const navigate = useNavigate();
+interface Inputs {
+  email: string;
+  password: string;
+}
 
+const schema = z.object({
+  email: z.string().email(),
+  password: z.string().min(15, 'Password must be at least 15 characters long!'),
+});
+
+const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleClick = () => {
-    navigate('/chat', { replace: true });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
+
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
+    console.log(data);
   };
 
   return (
-    <>
+    <form>
       <Stack spacing={3}>
-        <TextField name="email" label="Email address" />
+        <TextField
+          {...register('email')}
+          error={Boolean(errors.email)}
+          helperText={errors.email?.message?.toString()}
+          label="Email address"
+        />
 
         <TextField
-          name="password"
+          {...register('password')}
+          error={Boolean(errors.password)}
+          helperText={errors.password?.message?.toString()}
           label="Password"
           type={showPassword ? 'text' : 'password'}
           InputProps={{
@@ -65,11 +94,11 @@ const LoginForm = () => {
         size="large"
         type="submit"
         variant="contained"
-        onClick={handleClick}
+        onClick={handleSubmit(onSubmit)}
       >
         Login
       </Button>
-    </>
+    </form>
   );
 };
 
