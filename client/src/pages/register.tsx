@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { styled } from '@mui/material/styles';
 import {
+  Box,
   Link,
   Container,
   Typography,
@@ -40,11 +41,11 @@ const StyledSection = styled('div')(({ theme }) => ({
 
 const StyledContent = styled('div')(({ theme }) => ({
   maxWidth: 480,
-  margin: 'auto',
+  height: '100%',
   display: 'flex',
-  justifyContent: 'center',
   flexDirection: 'column',
-  padding: theme.spacing(12, 0),
+  justifyContent: 'center',
+  itemAlign: 'center',
 }));
 
 const Register = () => {
@@ -73,62 +74,64 @@ const Register = () => {
 
       <Container maxWidth="sm">
         <StyledContent>
-          <Typography variant="h5" fontWeight="bold" gutterBottom>
-            Sign Up
-          </Typography>
-
-          <Typography variant="body2" sx={{ mb: 5 }}>
-            Already have an account? {''}
-            <Link variant="subtitle2" onClick={() => navigate('/login')}>
-              Login
-            </Link>
-          </Typography>
-
-          <Stack direction="row" spacing={2}>
-            <Button
-              fullWidth
-              size="large"
-              color="inherit"
-              variant="outlined"
-              sx={{ border: '1px solid rgba(145, 158, 171, 0.32)' }}
-            >
-              <GoogleIcon
-                sx={{ width: '22px', height: '22px', color: '#DF3E30' }}
-              />
-            </Button>
-
-            <Button
-              fullWidth
-              size="large"
-              color="inherit"
-              variant="outlined"
-              sx={{ border: '1px solid rgba(145, 158, 171, 0.32)' }}
-            >
-              <FacebookIcon
-                sx={{ width: '22px', height: '22px', color: '#1877F2' }}
-              />
-            </Button>
-
-            <Button
-              fullWidth
-              size="large"
-              color="inherit"
-              variant="outlined"
-              sx={{ border: '1px solid rgba(145, 158, 171, 0.32)' }}
-            >
-              <LinkedInIcon
-                sx={{ width: '22px', height: '22px', color: '#006ABC' }}
-              />
-            </Button>
-          </Stack>
-
-          <Divider sx={{ my: 3 }}>
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              OR
+          <Box>
+            <Typography variant="h5" fontWeight="bold" gutterBottom>
+              Sign Up
             </Typography>
-          </Divider>
 
-          <RegisterForm />
+            <Typography variant="body2" sx={{ mb: 5 }}>
+              Already have an account? {''}
+              <Link variant="subtitle2" onClick={() => navigate('/login')}>
+                Login
+              </Link>
+            </Typography>
+
+            <Stack direction="row" spacing={2}>
+              <Button
+                fullWidth
+                size="large"
+                color="inherit"
+                variant="outlined"
+                sx={{ border: '1px solid rgba(145, 158, 171, 0.32)' }}
+              >
+                <GoogleIcon
+                  sx={{ width: '22px', height: '22px', color: '#DF3E30' }}
+                />
+              </Button>
+
+              <Button
+                fullWidth
+                size="large"
+                color="inherit"
+                variant="outlined"
+                sx={{ border: '1px solid rgba(145, 158, 171, 0.32)' }}
+              >
+                <FacebookIcon
+                  sx={{ width: '22px', height: '22px', color: '#1877F2' }}
+                />
+              </Button>
+
+              <Button
+                fullWidth
+                size="large"
+                color="inherit"
+                variant="outlined"
+                sx={{ border: '1px solid rgba(145, 158, 171, 0.32)' }}
+              >
+                <LinkedInIcon
+                  sx={{ width: '22px', height: '22px', color: '#006ABC' }}
+                />
+              </Button>
+            </Stack>
+
+            <Divider sx={{ my: 3 }}>
+              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                OR
+              </Typography>
+            </Divider>
+
+            <RegisterForm />
+          </Box>
         </StyledContent>
       </Container>
     </StyledRoot>
