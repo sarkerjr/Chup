@@ -3,14 +3,11 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
-  Link,
   Stack,
   Button,
   IconButton,
   InputAdornment,
   TextField,
-  Checkbox,
-  FormControlLabel,
 } from '@mui/material';
 
 // assets
