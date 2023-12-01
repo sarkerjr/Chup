@@ -27,7 +27,7 @@ const loginSchema = z.object({
   password: z.string().min(15, 'Password must be at least 15 characters long!'),
 });
 
-type LoginSchema = z.infer<typeof loginSchema>;
+type LoginSchemaType = z.infer<typeof loginSchema>;
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -36,7 +36,7 @@ const LoginForm = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginSchema>({
+  } = useForm<LoginSchemaType>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: '',

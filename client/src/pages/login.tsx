@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import {
   Link,
@@ -46,6 +47,8 @@ const StyledContent = styled('div')(({ theme }) => ({
 }));
 
 const Login = () => {
+  const navigate = useNavigate();
+
   const theme = useTheme();
   const matchUpMd = useMediaQuery(theme.breakpoints.up('md'));
 
@@ -81,7 +84,9 @@ const Login = () => {
 
           <Typography variant="body2" sx={{ mb: 5 }}>
             Don't have an account? {''}
-            <Link variant="subtitle2">Register</Link>
+            <Link variant="subtitle2" onClick={() => navigate('/register')}>
+              Register
+            </Link>
           </Typography>
 
           <Stack direction="row" spacing={2}>
