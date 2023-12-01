@@ -1,6 +1,9 @@
 import { lazy } from 'react';
 
-const Login = lazy(() => import('@/pages/login'));
+import Loadable from '@/components/Loadable';
+
+const Login = Loadable(lazy(() => import('@/pages/login')));
+const Register = Loadable(lazy(() => import('@/pages/register')));
 
 const PublicRoutes = {
   path: '/',
@@ -8,6 +11,10 @@ const PublicRoutes = {
     {
       path: '/login',
       element: <Login />,
+    },
+    {
+      path: '/register',
+      element: <Register />,
     },
   ],
 };
