@@ -4,7 +4,7 @@ export default class ApiError extends Error {
   statusCode: number;
   errorCode: string;
   isOperational: boolean = true;
-  details: ValidationErrorDetail[];
+  details?: ValidationErrorDetail[];
 
   constructor(
     statusCode: number,
