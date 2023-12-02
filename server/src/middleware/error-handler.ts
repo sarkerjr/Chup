@@ -3,14 +3,20 @@ import type { Request, Response, NextFunction } from 'express';
 import ApiError from '@/utils/error-handling/ApiError';
 
 const developmentErrors = (res: Response, error: ApiError) => {
-  res.status(error.statusCode).json({
-    error: {
+  if (error.isOperational) {
+    res.status(error.statusCode).json({
       code: error.errorCode,
       message: error.message,
       details: error.details,
       stack: error.stack,
-    },
-  });
+    });
+  } else {
+    res.status(error.statusCode).json({
+      code: error.errorCode,
+      message: error.message ?? 'An unexpected error occurred.',
+      stack: error.stack,
+    });
+  }
 };
 
 const productionErrors = (res: Response, error: ApiError) => {
@@ -23,7 +29,7 @@ const productionErrors = (res: Response, error: ApiError) => {
   } else {
     res.status(error.statusCode).json({
       code: error.errorCode,
-      message: 'An unexpected error occurred.',
+      message: error.message ?? 'An unexpected error occurred.',
     });
   }
 };
@@ -37,8 +43,8 @@ const errorHandler = (
   res: Response,
   _next: NextFunction
 ) => {
-  error.statusCode = error.statusCode || 500;
-  error.errorCode = error.errorCode || 'ERR_INTERNAL_SERVER';
+  error.statusCode = error.statusCode ?? 500;
+  error.errorCode = error.errorCode ?? 'ERR_INTERNAL_SERVER';
 
   if (process.env.NODE_ENV === 'development') {
     developmentErrors(res, error);
