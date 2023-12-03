@@ -5,6 +5,7 @@ import ApiError from '@/utils/error-handling/ApiError';
 const developmentErrors = (res: Response, error: ApiError) => {
   if (error.isOperational) {
     res.status(error.statusCode).json({
+      status: error.statusCode,
       code: error.errorCode,
       message: error.message,
       details: error.details,
@@ -12,8 +13,9 @@ const developmentErrors = (res: Response, error: ApiError) => {
     });
   } else {
     res.status(error.statusCode).json({
+      status: error.statusCode,
       code: error.errorCode,
-      message: error.message ?? 'An unexpected error occurred.',
+      message: 'An unexpected error occurred.',
       stack: error.stack,
     });
   }
@@ -22,12 +24,14 @@ const developmentErrors = (res: Response, error: ApiError) => {
 const productionErrors = (res: Response, error: ApiError) => {
   if (error.isOperational) {
     res.status(error.statusCode).json({
+      status: error.statusCode,
       code: error.errorCode,
       message: error.message,
       details: error.details,
     });
   } else {
     res.status(error.statusCode).json({
+      status: error.statusCode,
       code: error.errorCode,
       message: error.message ?? 'An unexpected error occurred.',
     });
