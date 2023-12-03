@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { type FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
+import { SerializedError } from '@reduxjs/toolkit';
 
 import {
   Box,
@@ -9,6 +11,7 @@ import {
   IconButton,
   InputAdornment,
   TextField,
+  Typography,
   Grid,
   FormControl,
   FormHelperText,
@@ -21,61 +24,75 @@ import {
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
-interface Inputs {
-  firstName: string;
-  lastName: string;
-  gender: 'MALE' | 'FEMALE' | 'OTHERS';
-  phone: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-}
-
-const RegisterSchema = z
-  .object({
-    firstName: z.string().min(2, 'First name must be at least 2 characters'),
-    lastName: z.string().min(2, 'Last name must be at least 2 characters'),
-    gender: z.enum(['MALE', 'FEMALE', 'OTHERS']),
-    phone: z
-      .string()
-      .regex(
-        /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9]){4,}$/,
-        'Invalid phone number!'
-      ),
-    email: z.string().email(),
-    password: z.string().min(8, 'Password must be at least 8 characters long!'),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: 'Passwords do not match',
-    path: ['confirmPassword'],
-  });
+// project imports
+import { RegisterInputType, ErrorData, ErrorDetail } from '@/lib/types';
+import { RegisterSchema } from '@/lib/validation';
+import { useRegisterUserMutation } from '@/store/services/auth.service';
 
 type RegisterSchemaType = z.infer<typeof RegisterSchema>;
 
+type FieldNames =
+  | 'email'
+  | 'password'
+  | 'root'
+  | 'firstName'
+  | 'lastName'
+  | 'gender'
+  | 'phoneNumber'
+  | 'confirmPassword';
+
+const defaultValues: RegisterInputType = {
+  email: '',
+  password: '',
+  confirmPassword: '',
+  firstName: '',
+  lastName: '',
+  gender: 'MALE',
+  phoneNumber: '',
+};
+
 const RegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);
+
+  const [registerUser, { error, isLoading, isSuccess, isError }] =
+    useRegisterUserMutation();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setError,
     control,
   } = useForm<RegisterSchemaType>({
     resolver: zodResolver(RegisterSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-      confirmPassword: '',
-      firstName: '',
-      lastName: '',
-      gender: 'MALE',
-      phone: '',
-    },
+    defaultValues,
   });
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    console.log(data);
+  useEffect(() => {
+    const errorData = getErrorData(error);
+    if (errorData?.details) {
+      errorData.details.forEach((error: ErrorDetail) => {
+        setError(error.field as FieldNames, { message: error.message });
+      });
+    }
+  }, [error]);
+
+  /**
+   * @description Get error response from error object
+   * @param error
+   * @returns error response or null
+   */
+  const getErrorData = (
+    error: FetchBaseQueryError | SerializedError | undefined
+  ) => {
+    if (error && 'data' in error) {
+      const errorData = error.data as ErrorData;
+      return errorData ?? null;
+    }
+  };
+
+  const onSubmit: SubmitHandler<RegisterInputType> = (data) => {
+    registerUser(data);
   };
 
   return (
@@ -168,9 +185,9 @@ const RegisterForm = () => {
 
           <Grid item xs={12}>
             <TextField
-              {...register('phone')}
-              error={Boolean(errors.phone)}
-              helperText={errors.phone?.message?.toString()}
+              {...register('phoneNumber')}
+              error={Boolean(errors.phoneNumber)}
+              helperText={errors.phoneNumber?.message?.toString()}
               label="Phone Number"
               fullWidth
             />
@@ -197,11 +214,26 @@ const RegisterForm = () => {
           </Grid>
 
           <Grid item xs={12}>
+            {isSuccess && (
+              <Typography color="green">
+                Registration is complete. Please log in.
+              </Typography>
+            )}
+
+            {isError && !getErrorData(error)?.details && (
+              <Typography color="red">
+                {getErrorData(error)?.message}
+              </Typography>
+            )}
+          </Grid>
+
+          <Grid item xs={12}>
             <Button
               fullWidth
               size="large"
               type="submit"
               variant="contained"
+              disabled={isLoading}
               onClick={handleSubmit(onSubmit)}
             >
               Register
