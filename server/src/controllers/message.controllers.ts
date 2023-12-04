@@ -34,7 +34,6 @@ export const getMessage = asyncHandler(async (req: Request, res: Response) => {
  */
 export const getMessages = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
-  console.log('🚀 ~ file: message.controllers.ts:37 ~ getMessages ~ id:', id);
 
   const messages = await messageService.getMessages(id);
   return res.json(messages);

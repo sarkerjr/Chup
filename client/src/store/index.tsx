@@ -6,6 +6,7 @@ import {
 } from 'react-redux';
 
 import rootReducer, { RootState } from './reducer';
+import middlewares from './middlewares';
 
 const store = configureStore({
   reducer: rootReducer,
@@ -13,7 +14,7 @@ const store = configureStore({
     getDefaultMiddleware({
       serializableCheck: false,
       immutableCheck: false,
-    }),
+    }).concat(middlewares),
 });
 
 const { dispatch } = store;
