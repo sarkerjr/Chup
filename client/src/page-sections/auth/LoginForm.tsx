@@ -17,17 +17,20 @@ import {
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
+// project imports
+import { LoginSchema } from '@/lib/validation';
+
 interface Inputs {
   email: string;
   password: string;
 }
 
-const loginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8, 'Password must be at least 8 characters long!'),
-});
+type LoginSchemaType = z.infer<typeof LoginSchema>;
 
-type LoginSchemaType = z.infer<typeof loginSchema>;
+const defaultValues: LoginSchemaType = {
+  email: '',
+  password: '',
+};
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -37,11 +40,8 @@ const LoginForm = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<LoginSchemaType>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-    },
+    resolver: zodResolver(LoginSchema),
+    defaultValues,
   });
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
