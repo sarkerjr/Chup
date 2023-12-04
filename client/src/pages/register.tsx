@@ -81,7 +81,7 @@ const Register = () => {
 
             <Typography variant="body2" sx={{ mb: 5 }}>
               Already have an account? {''}
-              <Link variant="subtitle2" onClick={() => navigate('/login')}>
+              <Link variant="subtitle2" onClick={() => navigate('/')}>
                 Login
               </Link>
             </Typography>

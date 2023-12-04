@@ -1,7 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { type FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
+import { SerializedError } from '@reduxjs/toolkit';
+
 import {
   Link,
   Stack,
@@ -11,6 +14,7 @@ import {
   TextField,
   Checkbox,
   FormControlLabel,
+  Typography,
 } from '@mui/material';
 
 // assets
@@ -19,6 +23,8 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 
 // project imports
 import { LoginSchema } from '@/lib/validation';
+import { ErrorDetail, ErrorData } from '@/lib/types';
+import { useLoginUserMutation } from '@/store/services/auth.service';
 
 interface Inputs {
   email: string;
@@ -26,6 +32,8 @@ interface Inputs {
 }
 
 type LoginSchemaType = z.infer<typeof LoginSchema>;
+
+type FieldNames = 'email' | 'password' | 'root';
 
 const defaultValues: LoginSchemaType = {
   email: '',
@@ -39,13 +47,35 @@ const LoginForm = () => {
     register,
     handleSubmit,
     formState: { errors },
+    setError,
   } = useForm<LoginSchemaType>({
     resolver: zodResolver(LoginSchema),
     defaultValues,
   });
 
+  const [loginUser, { error, isLoading, isError }] = useLoginUserMutation();
+
+  useEffect(() => {
+    const errorData = getErrorData(error);
+    if (errorData?.details) {
+      errorData.details.forEach((error: ErrorDetail) => {
+        setError(error.field as FieldNames, { message: error.message });
+      });
+    }
+  }, [error]);
+
+  // Get error response from error object
+  const getErrorData = (
+    error: FetchBaseQueryError | SerializedError | undefined
+  ) => {
+    if (error && 'data' in error) {
+      const errorData = error.data as ErrorData;
+      return errorData ?? null;
+    }
+  };
+
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    console.log(data);
+    loginUser(data);
   };
 
   return (
@@ -77,6 +107,10 @@ const LoginForm = () => {
             ),
           }}
         />
+
+        {isError && !getErrorData(error)?.details && (
+          <Typography color="red">{getErrorData(error)?.message}</Typography>
+        )}
       </Stack>
 
       <Stack
@@ -96,6 +130,7 @@ const LoginForm = () => {
         size="large"
         type="submit"
         variant="contained"
+        disabled={isLoading}
         onClick={handleSubmit(onSubmit)}
       >
         Login

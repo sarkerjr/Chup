@@ -77,11 +77,7 @@ const RegisterForm = () => {
     }
   }, [error]);
 
-  /**
-   * @description Get error response from error object
-   * @param error
-   * @returns error response or null
-   */
+  // Get error response from error object
   const getErrorData = (
     error: FetchBaseQueryError | SerializedError | undefined
   ) => {
