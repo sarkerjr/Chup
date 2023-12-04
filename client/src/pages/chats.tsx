@@ -35,7 +35,6 @@ import CallTwoToneIcon from '@mui/icons-material/CallTwoTone';
 import SendTwoToneIcon from '@mui/icons-material/SendTwoTone';
 import MoodTwoToneIcon from '@mui/icons-material/MoodTwoTone';
 import HighlightOffTwoToneIcon from '@mui/icons-material/HighlightOffTwoTone';
-// TODO: Fix this import error
 import default_avatar from '@/assets/images/users/avatar-1.png';
 
 // drawer content element
@@ -122,7 +121,7 @@ const Chats: FC = () => {
 
   // handle emoji
   const onEmojiClick = (
-    event: MouseEvent<Element, MouseEvent>,
+    _event: MouseEvent<Element, MouseEvent>,
     emojiObject: any
   ) => {
     setMessage(message + emojiObject.emoji);
@@ -144,7 +143,7 @@ const Chats: FC = () => {
   if (!user) return <Typography>Loading...</Typography>;
 
   return (
-    <Box sx={{ display: 'flex', height: '92dvh' }}>
+    <Box sx={{ display: 'flex', height: '100%' }}>
       {/* Chat Drawer Section */}
       <ChatDrawer
         openChatDrawer={openChatDrawer}
@@ -154,7 +153,7 @@ const Chats: FC = () => {
 
       {/* Main Chat Section */}
       <Main theme={theme} open={openChatDrawer}>
-        <Grid container spacing={gridSpacing}>
+        <Grid height="100%" container columnSpacing={gridSpacing}>
           <Grid
             item
             xs

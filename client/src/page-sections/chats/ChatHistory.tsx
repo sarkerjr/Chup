@@ -24,7 +24,7 @@ const ChatHistory: FC<ChatHistoryProps> = ({ data, theme, user }) => {
       sx={{
         overflowX: 'hidden',
         minHeight: 525,
-        height: 'calc(100vh - 440px)',
+        height: 'calc(100% - 440px)',
         width: '100%',
         px: 2,
       }}
