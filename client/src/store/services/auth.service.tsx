@@ -1,5 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
+import { login } from '@/store/slices/auth.slice';
+import { setSession } from '@/lib/helper';
+
 interface LoginResponse {
   accessToken: string;
 }
@@ -11,31 +14,27 @@ export const authApi = createApi({
     baseUrl: import.meta.env.VITE_BASE_URL,
   }),
   endpoints: (builder) => ({
-    // loginUser: builder.mutation<
-    //   LoginResponse,
-    //   { email: string; password: string }
-    // >({
-    //   query: ({ email, password }) => ({
-    //     url: 'auth/login',
-    //     method: 'POST',
-    //     body: { email, password },
-    //   }),
-    //   onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
-    //     try {
-    //       const { data } = await queryFulfilled;
-    //       if (data.accessToken) {
-    //         setSession(data.accessToken);
-    //         dispatch(
-    //           login({
-    //             role: getUserRole(data.accessToken),
-    //           })
-    //         );
-    //       }
-    //     } catch (error) {
-    //       console.log(error);
-    //     }
-    //   },
-    // }),
+    loginUser: builder.mutation<
+      LoginResponse,
+      { email: string; password: string }
+    >({
+      query: ({ email, password }) => ({
+        url: 'api/auth/login',
+        method: 'POST',
+        body: { email, password },
+      }),
+      onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
+        try {
+          const { data } = await queryFulfilled;
+          if (data.accessToken) {
+            setSession(data.accessToken);
+            dispatch(login());
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      },
+    }),
     registerUser: builder.mutation<any, Partial<any>>({
       query: (body) => ({
         url: '/api/auth/register',
@@ -46,4 +45,4 @@ export const authApi = createApi({
   }),
 });
 
-export const { useRegisterUserMutation } = authApi;
+export const { useLoginUserMutation, useRegisterUserMutation } = authApi;
