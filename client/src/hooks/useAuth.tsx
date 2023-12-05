@@ -4,13 +4,13 @@ import { useSelector } from '@/store';
 import { initStore } from '@/store/slices/auth.slice';
 
 const useAuth = () => {
-  const { isLoggedIn, isInitialized } = useSelector((state) => state.auth);
+  const { isLoggedIn } = useSelector((state) => state.auth);
 
   useEffect(() => {
     initStore();
   }, []);
 
-  return { isLoggedIn, isInitialized };
+  return { isLoggedIn };
 };
 
 export default useAuth;

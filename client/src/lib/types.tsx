@@ -19,3 +19,17 @@ export interface RegisterInputType {
   password: string;
   confirmPassword: string;
 }
+
+export interface LoggedInUser {
+  id: string;
+  profileId: string;
+  firstName: string;
+  lastName: string;
+  gender: string;
+}
+
+export interface JwtToken {
+  user: LoggedInUser;
+  iat: number;
+  exp: number;
+}
