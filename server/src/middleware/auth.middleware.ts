@@ -5,7 +5,8 @@ import ApiError from '@/utils/error-handling/ApiError';
 
 export default function (req: Request, _res: Response, next: NextFunction) {
   //Check if token exist
-  const token = req.get('Authorization');
+  const token = req.get('Authorization')?.split(' ')[1];
+
   if (!token) {
     throw new ApiError(401, 'ERR_UNAUTHORIZED', false, 'Token is missing');
   }
