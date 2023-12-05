@@ -28,7 +28,7 @@ export const authApi = createApi({
           const { data } = await queryFulfilled;
           if (data.accessToken) {
             setSession(data.accessToken);
-            dispatch(login());
+            dispatch(login(data.accessToken));
           }
         } catch (error) {
           console.log(error);
