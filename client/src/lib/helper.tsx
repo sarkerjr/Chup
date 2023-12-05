@@ -5,7 +5,7 @@ export const verifyToken = (accessToken: string | null) => {
     return false;
   }
 
-  const decoded = jwtDecode<{ exp: number }>(accessToken);
+  const decoded = jwtDecode<{ exp: number }>(accessToken.split(' ')[1]);
 
   return decoded.exp > Date.now() / 1000;
 };
