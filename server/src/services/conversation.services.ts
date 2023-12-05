@@ -1,6 +1,8 @@
 import { Prisma, prisma } from '@/utils/prisma';
 import { Conversation } from '@prisma/client';
 
+import ApiError from '@/utils/error-handling/ApiError';
+
 /**
  * Create a new conversation
  */
@@ -129,6 +131,16 @@ const getConversations = async (userId: string) => {
               profilePhoto: true,
             },
           },
+        },
+      },
+      messages: {
+        take: 1,
+        orderBy: {
+          createdAt: 'desc',
+        },
+        select: {
+          id: true,
+          messageText: true,
         },
       },
     },

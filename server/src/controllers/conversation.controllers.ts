@@ -20,15 +20,16 @@ export const createConversation = asyncHandler(
  */
 export const getConversation = asyncHandler(
   async (req: Request, res: Response) => {
-    const { userId } = req.body;
+    const conversationId = req.params.id;
+    const userId = req.body.user.id;
 
     const conversation = await conversationService.getConversation(
-      req.params.id,
+      conversationId,
       userId
     );
 
     if (conversation) {
-      return res.json(conversation);
+      return res.status(200).send(conversation);
     } else {
       return res.status(404).json({ message: 'Conversation not found' });
     }
@@ -36,15 +37,15 @@ export const getConversation = asyncHandler(
 );
 
 /**
- * @description Get all conversations
+ * @description Get all conversations of an user
  */
 export const getConversations = asyncHandler(
   async (req: Request, res: Response) => {
-    let { userId } = req.body;
-    const conversations = await conversationService.getConversations(
-      (userId = '656037e9ef6c2819e353328c')
-    );
-    return res.json(conversations);
+    const userId = req.body.user.id;
+
+    const conversations = await conversationService.getConversations(userId);
+
+    return res.status(200).send(conversations);
   }
 );
 
