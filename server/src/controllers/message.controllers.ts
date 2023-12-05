@@ -7,12 +7,18 @@ import messageService from 'services/message.services';
  */
 export const createMessage = asyncHandler(
   async (req: Request, res: Response) => {
-    const { senderId, conversationId, messageText } = req.body;
+    const {
+      conversationId,
+      messageText,
+      user: { id },
+    } = req.body;
+
     const message = await messageService.createMessage(
-      senderId,
+      id,
       conversationId,
       messageText
     );
+
     return res.status(201).json(message);
   }
 );
@@ -33,9 +39,10 @@ export const getMessage = asyncHandler(async (req: Request, res: Response) => {
  * @description Get all messages from a conversation
  */
 export const getMessages = asyncHandler(async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const { id: conversationId } = req.params;
+  const userId = req.body.user.id;
 
-  const messages = await messageService.getMessages(id);
+  const messages = await messageService.getMessages(userId, conversationId);
   return res.json(messages);
 });
 
