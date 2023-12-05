@@ -141,6 +141,7 @@ const getConversations = async (userId: string) => {
         select: {
           id: true,
           messageText: true,
+          seenIds: true,
         },
       },
     },
