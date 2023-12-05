@@ -14,6 +14,17 @@ import {
   useMediaQuery,
 } from '@mui/material';
 
+// assets
+import AttachmentTwoToneIcon from '@mui/icons-material/AttachmentTwoTone';
+import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
+import ErrorTwoToneIcon from '@mui/icons-material/ErrorTwoTone';
+import VideoCallTwoToneIcon from '@mui/icons-material/VideoCallTwoTone';
+import CallTwoToneIcon from '@mui/icons-material/CallTwoTone';
+import SendTwoToneIcon from '@mui/icons-material/SendTwoTone';
+import MoodTwoToneIcon from '@mui/icons-material/MoodTwoTone';
+import HighlightOffTwoToneIcon from '@mui/icons-material/HighlightOffTwoTone';
+import default_avatar from '@/assets/images/users/avatar-1.png';
+
 // project imports
 import UserDetails from '@/page-sections/chats/UserDetails';
 import ChatDrawer from '@/page-sections/chats/ChatDrawer';
@@ -25,17 +36,6 @@ import Avatar from '@/components/Avatar';
 import { appDrawerWidth as drawerWidth, gridSpacing } from '@/utils/const';
 import { useDispatch } from 'store';
 import { users, chatHistories } from '@/mockData/chat';
-
-// assets
-import AttachmentTwoToneIcon from '@mui/icons-material/AttachmentTwoTone';
-import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
-import ErrorTwoToneIcon from '@mui/icons-material/ErrorTwoTone';
-import VideoCallTwoToneIcon from '@mui/icons-material/VideoCallTwoTone';
-import CallTwoToneIcon from '@mui/icons-material/CallTwoTone';
-import SendTwoToneIcon from '@mui/icons-material/SendTwoTone';
-import MoodTwoToneIcon from '@mui/icons-material/MoodTwoTone';
-import HighlightOffTwoToneIcon from '@mui/icons-material/HighlightOffTwoTone';
-import default_avatar from '@/assets/images/users/avatar-1.png';
 
 // drawer content element
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
@@ -66,11 +66,6 @@ const Chats: FC = () => {
   const matchDownSM = useMediaQuery(theme.breakpoints.down('lg'));
 
   const dispatch = useDispatch();
-
-  // change the background of body for this page
-  useEffect(() => {
-    document.body.style.backgroundColor = '#e0f2fc';
-  });
 
   // set chat details page open when user is selected from sidebar
   const [emailDetails, setEmailDetails] = useState<boolean>(false);

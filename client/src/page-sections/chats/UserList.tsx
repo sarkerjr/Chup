@@ -1,7 +1,5 @@
-import { useState, Fragment, MouseEvent } from 'react';
-
+import { Fragment, MouseEvent } from 'react';
 import {
-  Chip,
   Divider,
   Grid,
   List,
@@ -11,29 +9,42 @@ import {
   Typography,
 } from '@mui/material';
 
+// assets
+import CircleIcon from '@mui/icons-material/Circle';
+
 // project imports
 import UserAvatar from './UserAvatar';
-import { users } from '@/mockData/chat';
+import { formatMessageTime } from '@/utils/dayjs';
+import { useSelector } from '@/store';
+import { useReadChatsQuery } from '@/store/services/chat.service';
 
 interface UserListProps {
   setUser: (user: any) => void;
 }
 
 const UserList: React.FC<UserListProps> = ({ setUser }) => {
-  const [data, setData] = useState<any[]>(users);
+  const { user } = useSelector((state) => state.auth);
 
-  const handleUserClick = (user: any) => (event: MouseEvent) => {
+  const { data } = useReadChatsQuery();
+
+  const handleUserClick = (conversation: any) => (event: MouseEvent) => {
     event.preventDefault();
-    setUser(user);
+    setUser(conversation);
+  };
+
+  // Check if the message is seen by the user
+  const isMessageSeen = (seenList: string[]): boolean => {
+    return seenList?.includes(user?.id ?? '');
   };
 
   return (
     <List component="nav">
-      {data.map((user) => (
-        <Fragment key={user.id}>
-          <ListItemButton onClick={handleUserClick(user)}>
+      <Divider />
+      {data?.map((conversation) => (
+        <Fragment key={conversation.id}>
+          <ListItemButton onClick={handleUserClick(conversation)}>
             <ListItemAvatar>
-              <UserAvatar user={user} />
+              <UserAvatar conversation={conversation} />
             </ListItemAvatar>
             <ListItemText
               primary={
@@ -49,14 +60,18 @@ const UserList: React.FC<UserListProps> = ({ setUser }) => {
                       component="span"
                       sx={{
                         fontSize: '14px',
-                        fontWeight: 'bold',
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap',
                         display: 'block',
+                        fontWeight: isMessageSeen(
+                          conversation?.messages[0]?.seenIds
+                        )
+                          ? 'regular'
+                          : 'bold',
                       }}
                     >
-                      {user.name}
+                      {conversation?.name}
                     </Typography>
                   </Grid>
                   <Grid item component="span">
@@ -66,7 +81,7 @@ const UserList: React.FC<UserListProps> = ({ setUser }) => {
                         fontSize: '12px',
                       }}
                     >
-                      {user.lastMessage}
+                      {formatMessageTime(conversation?.lastMessageAt)}
                     </Typography>
                   </Grid>
                 </Grid>
@@ -87,23 +102,24 @@ const UserList: React.FC<UserListProps> = ({ setUser }) => {
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap',
                         display: 'block',
+                        fontWeight: isMessageSeen(
+                          conversation?.messages[0]?.seenIds
+                        )
+                          ? 'light'
+                          : 'bold',
                       }}
                     >
-                      {user.status}
+                      {conversation?.messages[0]?.messageText ||
+                        'Start Conversation...'}
                     </Typography>
                   </Grid>
+
                   <Grid item component="span">
-                    {user.unReadChatCount !== 0 && (
-                      <Chip
-                        label={user.unReadChatCount}
-                        component="span"
+                    {!isMessageSeen(conversation?.messages[0]?.seenIds) && (
+                      <CircleIcon
                         color="secondary"
                         sx={{
-                          width: 20,
-                          height: 20,
-                          '& .MuiChip-label': {
-                            px: 0.5,
-                          },
+                          width: '10px',
                         }}
                       />
                     )}
