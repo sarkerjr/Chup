@@ -6,12 +6,14 @@ import profileRoutes from './profile.routes';
 import messageRoutes from './message.routes';
 import conversationRoutes from './conversation.routes';
 
+import isAuthenticated from '@/middleware/auth.middleware';
+
 const router = express.Router();
 
 router.use('/auth', authRoutes);
-router.use('/user', userRoutes);
-router.use('/profile', profileRoutes);
-router.use('/message', messageRoutes);
-router.use('/conversation', conversationRoutes);
+router.use('/user', isAuthenticated, userRoutes);
+router.use('/profile', isAuthenticated, profileRoutes);
+router.use('/message', isAuthenticated, messageRoutes);
+router.use('/conversation', isAuthenticated, conversationRoutes);
 
 export default router;
