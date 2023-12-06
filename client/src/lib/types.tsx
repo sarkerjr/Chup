@@ -48,3 +48,16 @@ export interface Message {
     };
   };
 }
+
+export interface Conversation {
+  id: string;
+  name: string;
+  isGroup: boolean;
+  lastMessageAt: string;
+  users: any[];
+  messages: {
+    id: string;
+    messageText: string;
+    seenIds: string[];
+  };
+}

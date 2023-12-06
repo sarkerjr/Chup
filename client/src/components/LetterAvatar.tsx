@@ -2,7 +2,7 @@ import * as React from 'react';
 import Avatar, { AvatarProps } from '@/components/Avatar';
 
 interface LetterAvatarProps extends AvatarProps {
-  name: string;
+  name: string | null;
 }
 
 function stringToColor(string: string) {
@@ -23,7 +23,7 @@ function stringToColor(string: string) {
   return color;
 }
 
-function stringAvatar(name: string) {
+function stringAvatar(name: string | null) {
   const trimmedName = name?.trim();
   const nameParts = trimmedName ? trimmedName.split(' ') : [];
 
@@ -37,7 +37,7 @@ function stringAvatar(name: string) {
 
   return {
     sx: {
-      bgcolor: stringToColor(trimmedName),
+      bgcolor: stringToColor(trimmedName ?? ''),
     },
     children: `${firstInitial}${secondInitial}`,
   };
