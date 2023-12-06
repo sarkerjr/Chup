@@ -1,4 +1,6 @@
 import { Fragment, MouseEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import {
   Divider,
   Grid,
@@ -27,9 +29,12 @@ const UserList: React.FC<UserListProps> = ({ setUser }) => {
 
   const { data } = useReadChatsQuery();
 
-  const handleUserClick = (conversation: any) => (event: MouseEvent) => {
+  const navigate = useNavigate();
+
+  const handleClick = (chatId: string) => (event: MouseEvent) => {
     event.preventDefault();
-    setUser(conversation);
+
+    navigate(`/chat/${chatId}`);
   };
 
   // Check if the message is seen by the user
@@ -42,7 +47,7 @@ const UserList: React.FC<UserListProps> = ({ setUser }) => {
       <Divider />
       {data?.map((conversation) => (
         <Fragment key={conversation.id}>
-          <ListItemButton onClick={handleUserClick(conversation)}>
+          <ListItemButton onClick={handleClick(conversation.id)}>
             <ListItemAvatar>
               <UserAvatar conversation={conversation} />
             </ListItemAvatar>

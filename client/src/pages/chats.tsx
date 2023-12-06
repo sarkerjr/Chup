@@ -1,4 +1,5 @@
 import { FC, MouseEvent, KeyboardEvent, useEffect, useState } from 'react';
+import { Outlet } from 'react-router-dom';
 import Picker from 'emoji-picker-react';
 
 import { useTheme, styled } from '@mui/material/styles';
@@ -220,7 +221,8 @@ const Chats: FC = () => {
                   <Divider sx={{ mt: theme.spacing(2) }} />
                 </Grid>
 
-                <ChatHistory theme={theme} user={user} data={data} />
+                {/* Chat History */}
+                <Outlet />
 
                 <Grid item xs={12}>
                   <Grid container spacing={1} alignItems="center">
@@ -290,6 +292,7 @@ const Chats: FC = () => {
             </MainCard>
           </Grid>
 
+          {/* User Details */}
           {emailDetails && (
             <Grid item sx={{ margin: { xs: '0 auto', md: 'initial' } }}>
               <Box
