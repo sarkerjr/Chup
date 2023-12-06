@@ -33,3 +33,18 @@ export interface JwtToken {
   iat: number;
   exp: number;
 }
+
+export interface Message {
+  id: string;
+  conversationId: string;
+  messageText: string;
+  createdAt: string;
+  sender: {
+    id: string;
+    profile: {
+      id: string;
+      firstName: string;
+      lastName: string;
+    };
+  };
+}

@@ -3,6 +3,8 @@ import * as relativeTime from 'dayjs/plugin/relativeTime';
 
 dayjs.extend(relativeTime);
 
+export default dayjs;
+
 export const formatMessageTime = (timestamp) => {
   const now = dayjs();
   const messageDate = dayjs(timestamp);
