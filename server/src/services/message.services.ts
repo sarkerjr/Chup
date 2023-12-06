@@ -1,6 +1,8 @@
 import { Prisma, prisma } from '@/utils/prisma';
 import { Message } from '@prisma/client';
 
+import ApiError from '@/utils/error-handling/ApiError';
+
 /**
  * Create a new message
  * @returns The created message
@@ -11,6 +13,24 @@ const createMessage = async (
   messageText: string
 ) => {
   return await prisma.$transaction(async (tx) => {
+    const conversation = await tx.conversation.findUnique({
+      where: { id: conversationId },
+      select: { userIds: true },
+    });
+
+    if (!conversation) {
+      throw new ApiError(404, 'ERR_NOT_FOUND', false, 'Conversation not found');
+    }
+
+    if (!conversation.userIds.includes(senderId)) {
+      throw new ApiError(
+        403,
+        'ERR_FORBIDDEN',
+        true,
+        'You are not allowed to send messages to this conversation'
+      );
+    }
+
     const message = await tx.message.create({
       data: {
         messageText: messageText,
@@ -43,10 +63,45 @@ const getMessage = async (id: string): Promise<Message | null> => {
 /**
  * @description Get all messages from a conversation
  */
-const getMessages = async (conversationId: string): Promise<Message[]> => {
+const getMessages = async (senderId: string, conversationId: string) => {
+  const conversation = await prisma.conversation.findUnique({
+    where: {
+      id: conversationId,
+    },
+    select: {
+      userIds: true,
+    },
+  });
+
+  if (conversation && !conversation.userIds.includes(senderId)) {
+    throw new ApiError(
+      403,
+      'ERR_FORBIDDEN',
+      true,
+      'You are not allowed to view messages from this conversation'
+    );
+  }
+
   return await prisma.message.findMany({
     where: {
       conversationId,
+    },
+    select: {
+      id: true,
+      messageText: true,
+      sender: {
+        select: {
+          id: true,
+          profile: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+            },
+          },
+        },
+      },
+      createdAt: true,
     },
     orderBy: {
       createdAt: 'asc',

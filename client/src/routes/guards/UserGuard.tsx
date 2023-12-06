@@ -9,12 +9,10 @@ const UserGuard = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isLoggedIn) {
-      navigate('/chat', { replace: true });
-    } else {
+    if (!isLoggedIn) {
       navigate('/', { replace: true });
     }
-  }, [isLoggedIn, navigate]);
+  }, [isLoggedIn]);
 
   return <Outlet />;
 };

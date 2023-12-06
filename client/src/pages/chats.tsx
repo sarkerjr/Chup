@@ -1,4 +1,5 @@
 import { FC, MouseEvent, KeyboardEvent, useEffect, useState } from 'react';
+import { useParams, Outlet } from 'react-router-dom';
 import Picker from 'emoji-picker-react';
 
 import { useTheme, styled } from '@mui/material/styles';
@@ -14,18 +15,6 @@ import {
   useMediaQuery,
 } from '@mui/material';
 
-// project imports
-import UserDetails from '@/page-sections/chats/UserDetails';
-import ChatDrawer from '@/page-sections/chats/ChatDrawer';
-import ChatHistory from '@/page-sections/chats/ChatHistory';
-import AvatarStatus from '@/page-sections/chats/AvatarStatus';
-import { openDrawer } from '@/store/slices/menu.slice';
-import MainCard from '@/components/MainCard';
-import Avatar from '@/components/Avatar';
-import { appDrawerWidth as drawerWidth, gridSpacing } from '@/utils/const';
-import { useDispatch } from 'store';
-import { users, chatHistories } from '@/mockData/chat';
-
 // assets
 import AttachmentTwoToneIcon from '@mui/icons-material/AttachmentTwoTone';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
@@ -35,14 +24,22 @@ import CallTwoToneIcon from '@mui/icons-material/CallTwoTone';
 import SendTwoToneIcon from '@mui/icons-material/SendTwoTone';
 import MoodTwoToneIcon from '@mui/icons-material/MoodTwoTone';
 import HighlightOffTwoToneIcon from '@mui/icons-material/HighlightOffTwoTone';
-// TODO: Fix this import error
-import default_avatar from '@/assets/images/users/avatar-1.png';
+
+// project imports
+import { Conversation } from '@/lib/types';
+import ChatDrawer from '@/page-sections/chats/ChatDrawer';
+import UserDetails from '@/page-sections/chats/UserDetails';
+import { openDrawer } from '@/store/slices/menu.slice';
+import MainCard from '@/components/MainCard';
+import LetterAvatar from '@/components/LetterAvatar';
+import { appDrawerWidth as drawerWidth, gridSpacing } from '@/utils/const';
+import { useDispatch, useSelector } from 'store';
+import { useSendMessageMutation } from '@/store/services/chat.service';
 
 // drawer content element
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
   ({ theme, open }: { theme: any; open: boolean }) => ({
     flexGrow: 1,
-    paddingLeft: open ? theme.spacing(3) : 0,
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.shorter,
@@ -63,15 +60,12 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
 );
 
 const Chats: FC = () => {
+  const { user } = useSelector((state) => state.auth);
+
   const theme = useTheme();
   const matchDownSM = useMediaQuery(theme.breakpoints.down('lg'));
 
   const dispatch = useDispatch();
-
-  // change the background of body for this page
-  useEffect(() => {
-    document.body.style.backgroundColor = '#e0f2fc';
-  });
 
   // set chat details page open when user is selected from sidebar
   const [emailDetails, setEmailDetails] = useState<boolean>(false);
@@ -90,8 +84,7 @@ const Chats: FC = () => {
     setOpenChatDrawer(!matchDownSM);
   }, [matchDownSM]);
 
-  const [user, setUser] = useState<any>(users[0]);
-  const [data, setData] = useState<any[]>(chatHistories);
+  const [conversation, setConversation] = useState<Conversation | null>(null);
 
   useEffect(() => {
     // hide left drawer when email app opens
@@ -101,16 +94,14 @@ const Chats: FC = () => {
 
   // handle new message form
   const [message, setMessage] = useState<string>('');
+
+  const { chatId } = useParams<{ chatId: string }>();
+  const [sendMessage, { isLoading }] = useSendMessageMutation();
+
   const handleOnSend = () => {
-    const d = new Date();
+    if (!chatId) return;
     setMessage('');
-    const newMessage = {
-      from: 'User1',
-      to: user?.name,
-      text: message,
-      time: d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    };
-    setData((prevState) => [...prevState, newMessage]);
+    sendMessage({ conversationId: chatId, messageText: message });
   };
 
   const handleEnter = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -122,7 +113,7 @@ const Chats: FC = () => {
 
   // handle emoji
   const onEmojiClick = (
-    event: MouseEvent<Element, MouseEvent>,
+    _event: MouseEvent<Element, MouseEvent>,
     emojiObject: any
   ) => {
     setMessage(message + emojiObject.emoji);
@@ -141,32 +132,35 @@ const Chats: FC = () => {
     setAnchorElEmoji(undefined);
   };
 
-  if (!user) return <Typography>Loading...</Typography>;
-
   return (
-    <Box sx={{ display: 'flex', height: '92dvh' }}>
+    <Box sx={{ display: 'flex', height: '100%' }}>
       {/* Chat Drawer Section */}
       <ChatDrawer
         openChatDrawer={openChatDrawer}
         handleDrawerOpen={handleDrawerOpen}
-        setUser={setUser}
+        setConversation={setConversation}
       />
 
       {/* Main Chat Section */}
       <Main theme={theme} open={openChatDrawer}>
-        <Grid container spacing={gridSpacing}>
+        <Grid container height="100%" columnSpacing={gridSpacing}>
           <Grid
             item
             xs
             zeroMinWidth
-            sx={{ display: emailDetails ? { xs: 'none', sm: 'flex' } : 'flex' }}
+            sx={{
+              display: emailDetails ? { xs: 'none', sm: 'flex' } : 'flex',
+              height: '100%',
+            }}
           >
             <MainCard
               sx={{
                 bgcolor: 'grey.50',
               }}
+              contentSX={{ height: '100%' }}
             >
-              <Grid container spacing={gridSpacing}>
+              <Grid container height="100%">
+                {/* Chat Header */}
                 <Grid item xs={12}>
                   <Grid container alignItems="center" spacing={0.5}>
                     <Grid item>
@@ -182,7 +176,7 @@ const Chats: FC = () => {
                         sx={{ flexWrap: 'nowrap' }}
                       >
                         <Grid item>
-                          <Avatar alt={user?.name} src={default_avatar} />
+                          <LetterAvatar name={conversation?.name ?? ''} />
                         </Grid>
                         <Grid item sm zeroMinWidth>
                           <Grid container spacing={0} alignItems="center">
@@ -191,15 +185,19 @@ const Chats: FC = () => {
                                 component="div"
                                 sx={{ fontSize: '16px', fontWeight: 600 }}
                               >
-                                {user?.name}{' '}
-                                {user?.online_status && (
-                                  <AvatarStatus status={user?.online_status} />
-                                )}
+                                {/* TODO: feat add to backend */}
+                                {conversation?.name}{' '}
+                                {/* {conversation?.online_status && (
+                                  <AvatarStatus
+                                    status={conversation?.online_status}
+                                  />
+                                )} */}
                               </Typography>
                             </Grid>
                             <Grid item xs={12}>
                               <Typography variant="caption">
-                                Last seen {user?.lastMessage}
+                                {/* TODO: feat add to backend */}
+                                Last seen {'2 hours ago'}
                               </Typography>
                             </Grid>
                           </Grid>
@@ -226,8 +224,10 @@ const Chats: FC = () => {
                   <Divider sx={{ mt: theme.spacing(2) }} />
                 </Grid>
 
-                <ChatHistory theme={theme} user={user} data={data} />
+                {/* Chat History */}
+                <Outlet />
 
+                {/* Chat Input */}
                 <Grid item xs={12}>
                   <Grid container spacing={1} alignItems="center">
                     <Grid item>
@@ -274,6 +274,7 @@ const Chats: FC = () => {
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
                         onKeyPress={handleEnter}
+                        disabled={isLoading}
                       />
                     </Grid>
                     <Grid item>
@@ -286,6 +287,7 @@ const Chats: FC = () => {
                         color="primary"
                         onClick={handleOnSend}
                         size="large"
+                        disabled={isLoading}
                       >
                         <SendTwoToneIcon />
                       </IconButton>
@@ -296,6 +298,7 @@ const Chats: FC = () => {
             </MainCard>
           </Grid>
 
+          {/* User Details */}
           {emailDetails && (
             <Grid item sx={{ margin: { xs: '0 auto', md: 'initial' } }}>
               <Box
@@ -311,7 +314,7 @@ const Chats: FC = () => {
                   <HighlightOffTwoToneIcon />
                 </IconButton>
               </Box>
-              <UserDetails user={user} />
+              <UserDetails user={{}} />
             </Grid>
           )}
         </Grid>

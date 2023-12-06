@@ -2,7 +2,7 @@ import React from 'react';
 import { useTheme } from '@mui/material/styles';
 import MuiAvatar, { AvatarProps as MuiAvatarProps } from '@mui/material/Avatar';
 
-interface AvatarProps extends MuiAvatarProps {
+export interface AvatarProps extends MuiAvatarProps {
   color?: string;
   outline?: boolean;
   size?: 'badge' | 'xs' | 'sm' | 'lg' | 'xl' | 'md';

@@ -19,3 +19,45 @@ export interface RegisterInputType {
   password: string;
   confirmPassword: string;
 }
+
+export interface LoggedInUser {
+  id: string;
+  profileId: string;
+  firstName: string;
+  lastName: string;
+  gender: string;
+}
+
+export interface JwtToken {
+  user: LoggedInUser;
+  iat: number;
+  exp: number;
+}
+
+export interface Message {
+  id: string;
+  conversationId: string;
+  messageText: string;
+  createdAt: string;
+  sender: {
+    id: string;
+    profile: {
+      id: string;
+      firstName: string;
+      lastName: string;
+    };
+  };
+}
+
+export interface Conversation {
+  id: string;
+  name: string;
+  isGroup: boolean;
+  lastMessageAt: string;
+  users: any[];
+  messages: {
+    id: string;
+    messageText: string;
+    seenIds: string[];
+  };
+}

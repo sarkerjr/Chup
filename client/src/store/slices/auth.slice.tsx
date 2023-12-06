@@ -1,37 +1,35 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { store } from '@/store';
 
-import { verifyToken, setSession } from '@/lib/helper';
+import { LoggedInUser } from '@/lib/types';
+import { verifyToken, setSession, decodeToken } from '@/lib/helper';
 
 interface State {
   isLoggedIn: boolean;
-  isInitialized: boolean;
+  user: LoggedInUser | null;
 }
 
 const initialState: State = {
   isLoggedIn: true,
-  isInitialized: false,
+  user: null,
 };
 
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    login(state) {
+    login(state, action: PayloadAction<string>) {
       state.isLoggedIn = true;
+      state.user = decodeToken(action.payload).user;
     },
     logout(state) {
       state.isLoggedIn = false;
       setSession(null);
     },
-    initialize(state, action: PayloadAction<{ isLoggedIn: boolean }>) {
-      state.isInitialized = true;
-      state.isLoggedIn = action.payload.isLoggedIn;
-    },
   },
 });
 
-export const { login, logout, initialize } = authSlice.actions;
+export const { login, logout } = authSlice.actions;
 
 export default authSlice.reducer;
 
@@ -40,11 +38,7 @@ export const initStore = () => {
     const accessToken = window.localStorage.getItem('accessToken');
     if (accessToken && verifyToken(accessToken)) {
       setSession(accessToken);
-      store.dispatch(
-        initialize({
-          isLoggedIn: true,
-        })
-      );
+      store.dispatch(login(accessToken));
     } else {
       store.dispatch(logout());
     }

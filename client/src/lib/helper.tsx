@@ -1,11 +1,13 @@
 import { jwtDecode } from 'jwt-decode';
 
-export const verifyToken = (accessToken: string | null) => {
-  if (!accessToken) {
-    return false;
-  }
+import { JwtToken } from './types';
 
-  const decoded = jwtDecode<{ exp: number }>(accessToken);
+export const decodeToken = (accessToken: string): JwtToken => {
+  return jwtDecode(accessToken.split(' ')[1]);
+};
+
+export const verifyToken = (accessToken: string) => {
+  const decoded: JwtToken = decodeToken(accessToken);
 
   return decoded.exp > Date.now() / 1000;
 };

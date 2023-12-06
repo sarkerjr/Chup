@@ -1,16 +1,24 @@
 import { forwardRef, ReactNode, Ref } from 'react';
 import {
   Card,
-  CardContent,
+  CardContent as MuiCardContent,
   CardHeader,
   Divider,
   Typography,
+  styled,
 } from '@mui/material';
 
 // constant
 const headerSX = {
   '& .MuiCardHeader-action': { mr: 0 },
 };
+
+const CardContent = styled(MuiCardContent)(`
+  padding: 0;
+  &:last-child {
+    padding-bottom: 0;
+  }
+`);
 
 interface MainCardProps {
   border?: boolean;

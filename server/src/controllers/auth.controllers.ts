@@ -38,7 +38,7 @@ export const loginUser = asyncHandler(async (req: Request, res: Response) => {
       { expiresIn: process.env.JWT_EXPIRE_TIME }
     );
 
-    return res.status(200).json({ accessToken: token });
+    return res.status(200).json({ accessToken: `Bearer ${token}` });
   }
 });
 
