@@ -1,17 +1,22 @@
-import { Fragment, FC, useLayoutEffect, useRef } from 'react';
+import { Fragment, useLayoutEffect, useRef } from 'react';
+import { useParams } from 'react-router-dom';
+import dayjs from '@/utils/dayjs';
 import { Box, Card, CardContent, Grid, Typography } from '@mui/material';
 
 // project imports
 import { gridSpacing } from '@/utils/const';
+import { Message } from '@/lib/types';
+import { formatMessageTime } from '@/utils/dayjs';
+import { useSelector } from '@/store';
+import { useReadMessagesQuery } from '@/store/services/chat.service';
 
-interface ChatHistoryProps {
-  theme: any;
-  data: any[];
-  user: any;
-}
-
-const ChatHistory: FC<ChatHistoryProps> = ({ data, theme, user }) => {
+const ChatHistory = () => {
   const scrollRef = useRef<HTMLSpanElement | null>(null);
+
+  const { user } = useSelector((state) => state.auth);
+
+  const { chatId } = useParams();
+  const { data } = useReadMessagesQuery(chatId!);
 
   useLayoutEffect(() => {
     if (scrollRef?.current) {
@@ -32,9 +37,9 @@ const ChatHistory: FC<ChatHistoryProps> = ({ data, theme, user }) => {
       <CardContent>
         <Grid item xs={12}>
           <Grid container spacing={gridSpacing}>
-            {data.map((history, index) => (
-              <Fragment key={index}>
-                {history.from !== user.name ? (
+            {data?.map((message: Message) => (
+              <Fragment key={message?.id}>
+                {message?.sender?.id === user?.id ? (
                   <Grid item xs={12}>
                     <Grid container spacing={gridSpacing}>
                       <Grid item xs={2} />
@@ -58,7 +63,7 @@ const ChatHistory: FC<ChatHistoryProps> = ({ data, theme, user }) => {
                             <Grid container spacing={1}>
                               <Grid item xs={12}>
                                 <Typography variant="body2" color="#616161">
-                                  {history.text}
+                                  {message?.messageText}
                                 </Typography>
                               </Grid>
                               <Grid item xs={12}>
@@ -67,7 +72,7 @@ const ChatHistory: FC<ChatHistoryProps> = ({ data, theme, user }) => {
                                   variant="subtitle2"
                                   color="#9e9e9e"
                                 >
-                                  {history.time}
+                                  {dayjs(message?.createdAt).format('hh:mm A')}
                                 </Typography>
                               </Grid>
                             </Grid>
@@ -92,7 +97,7 @@ const ChatHistory: FC<ChatHistoryProps> = ({ data, theme, user }) => {
                             <Grid container spacing={1}>
                               <Grid item xs={12}>
                                 <Typography variant="body2" color="#616161">
-                                  {history.text}
+                                  {message?.messageText}
                                 </Typography>
                               </Grid>
                               <Grid item xs={12}>
@@ -101,7 +106,7 @@ const ChatHistory: FC<ChatHistoryProps> = ({ data, theme, user }) => {
                                   variant="subtitle2"
                                   color="#9e9e9e"
                                 >
-                                  {history.time}
+                                  {dayjs(message?.createdAt).format('hh:mm A')}
                                 </Typography>
                               </Grid>
                             </Grid>

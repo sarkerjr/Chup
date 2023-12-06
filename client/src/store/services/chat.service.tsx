@@ -11,7 +11,11 @@ export const chatApi = createApi({
       query: () => 'api/conversation',
       providesTags: ['Chats'],
     }),
+    readMessages: builder.query<any, string>({
+      query: (chatId) => `api/message/${chatId}`,
+      providesTags: ['Chats'],
+    }),
   }),
 });
 
-export const { useReadChatsQuery } = chatApi;
+export const { useReadChatsQuery, useReadMessagesQuery } = chatApi;
