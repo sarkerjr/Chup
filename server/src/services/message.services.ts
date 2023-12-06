@@ -86,6 +86,23 @@ const getMessages = async (senderId: string, conversationId: string) => {
     where: {
       conversationId,
     },
+    select: {
+      id: true,
+      messageText: true,
+      sender: {
+        select: {
+          id: true,
+          profile: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+            },
+          },
+        },
+      },
+      createdAt: true,
+    },
     orderBy: {
       createdAt: 'asc',
     },
