@@ -17,7 +17,6 @@ import { gridSpacing } from '@/utils/const';
 import PinDropTwoToneIcon from '@mui/icons-material/PinDropTwoTone';
 import PhoneTwoToneIcon from '@mui/icons-material/PhoneTwoTone';
 import EmailTwoToneIcon from '@mui/icons-material/EmailTwoTone';
-// TODOL Fix this import error
 import default_avatar from '@/assets/images/users/avatar-1.png';
 
 interface UserDetailsProps {
@@ -33,7 +32,11 @@ const UserDetails: FC<UserDetailsProps> = ({ user }) => {
   const theme = useTheme();
 
   return (
-    <Grid container spacing={gridSpacing} sx={{ width: '100%', maxWidth: 300 }}>
+    <Grid
+      container
+      spacing={gridSpacing}
+      sx={{ width: '100%', maxWidth: 300, mt: '2px' }}
+    >
       <Grid item xs={12}>
         <Card>
           <CardContent
@@ -60,7 +63,7 @@ const UserDetails: FC<UserDetailsProps> = ({ user }) => {
               <Grid item xs={12}>
                 <AvatarStatus status={user?.online_status} />
                 <Typography variant="caption" component="div" color="#9e9e9e">
-                  {user?.online_status.replaceAll('_', ' ')}
+                  {user?.online_status?.replaceAll('_', ' ')}
                 </Typography>
               </Grid>
               <Grid item xs={12}>

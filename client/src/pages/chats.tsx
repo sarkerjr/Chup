@@ -28,6 +28,7 @@ import HighlightOffTwoToneIcon from '@mui/icons-material/HighlightOffTwoTone';
 // project imports
 import { Conversation } from '@/lib/types';
 import ChatDrawer from '@/page-sections/chats/ChatDrawer';
+import UserDetails from '@/page-sections/chats/UserDetails';
 import { openDrawer } from '@/store/slices/menu.slice';
 import MainCard from '@/components/MainCard';
 import LetterAvatar from '@/components/LetterAvatar';
@@ -38,7 +39,6 @@ import { useDispatch } from 'store';
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
   ({ theme, open }: { theme: any; open: boolean }) => ({
     flexGrow: 1,
-    paddingLeft: open ? theme.spacing(3) : 0,
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.shorter,
@@ -142,19 +142,24 @@ const Chats: FC = () => {
 
       {/* Main Chat Section */}
       <Main theme={theme} open={openChatDrawer}>
-        <Grid height="100%" container columnSpacing={gridSpacing}>
+        <Grid container height="100%" columnSpacing={gridSpacing}>
           <Grid
             item
             xs
             zeroMinWidth
-            sx={{ display: emailDetails ? { xs: 'none', sm: 'flex' } : 'flex' }}
+            sx={{
+              display: emailDetails ? { xs: 'none', sm: 'flex' } : 'flex',
+              height: '100%',
+            }}
           >
             <MainCard
               sx={{
                 bgcolor: 'grey.50',
               }}
+              contentSX={{ height: '100%' }}
             >
-              <Grid container spacing={gridSpacing}>
+              <Grid container height="100%">
+                {/* Chat Header */}
                 <Grid item xs={12}>
                   <Grid container alignItems="center" spacing={0.5}>
                     <Grid item>
@@ -221,6 +226,7 @@ const Chats: FC = () => {
                 {/* Chat History */}
                 <Outlet />
 
+                {/* Chat Input */}
                 <Grid item xs={12}>
                   <Grid container spacing={1} alignItems="center">
                     <Grid item>
@@ -305,7 +311,7 @@ const Chats: FC = () => {
                   <HighlightOffTwoToneIcon />
                 </IconButton>
               </Box>
-              {/* <UserDetails user={user} /> */}
+              <UserDetails user={{}} />
             </Grid>
           )}
         </Grid>
