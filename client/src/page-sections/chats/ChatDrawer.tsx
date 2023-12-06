@@ -28,13 +28,13 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 interface ChatDrawerProps {
   handleDrawerOpen: () => void;
   openChatDrawer: boolean;
-  setUser: (user: any) => void;
+  setConversation: (user: any) => void;
 }
 
 const ChatDrawer: React.FC<ChatDrawerProps> = ({
   handleDrawerOpen,
   openChatDrawer,
-  setUser,
+  setConversation,
 }) => {
   const theme = useTheme<Theme>();
   const matchDownLG = useMediaQuery(theme.breakpoints.down('lg'));
@@ -106,8 +106,8 @@ const ChatDrawer: React.FC<ChatDrawerProps> = ({
                   >
                     <Grid item>
                       <UserAvatar
-                        user={{
-                          online_status: status,
+                        conversation={{
+                          online_status: 'available',
                           avatar: 'avatar-5.png',
                           name: 'User 1',
                         }}
@@ -185,7 +185,7 @@ const ChatDrawer: React.FC<ChatDrawerProps> = ({
                 minHeight: matchDownLG ? 0 : 520,
               }}
             >
-              <UserList setUser={setUser} />
+              <UserList setConversation={setConversation} />
             </Box>
           </Box>
         </MainCard>

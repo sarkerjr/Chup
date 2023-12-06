@@ -6,7 +6,6 @@ import { Box, Card, CardContent, Grid, Typography } from '@mui/material';
 // project imports
 import { gridSpacing } from '@/utils/const';
 import { Message } from '@/lib/types';
-import { formatMessageTime } from '@/utils/dayjs';
 import { useSelector } from '@/store';
 import { useReadMessagesQuery } from '@/store/services/chat.service';
 
@@ -28,6 +27,7 @@ const ChatHistory = () => {
     <Box
       sx={{
         overflowX: 'hidden',
+        overflowY: 'scroll',
         minHeight: 525,
         height: 'calc(100% - 440px)',
         width: '100%',

@@ -21,20 +21,20 @@ import { useSelector } from '@/store';
 import { useReadChatsQuery } from '@/store/services/chat.service';
 
 interface UserListProps {
-  setUser: (user: any) => void;
+  setConversation: (user: any) => void;
 }
 
-const UserList: React.FC<UserListProps> = ({ setUser }) => {
+const UserList: React.FC<UserListProps> = ({ setConversation }) => {
   const { user } = useSelector((state) => state.auth);
 
   const { data } = useReadChatsQuery();
 
   const navigate = useNavigate();
 
-  const handleClick = (chatId: string) => (event: MouseEvent) => {
+  const handleClick = (conversation: any) => (event: MouseEvent) => {
     event.preventDefault();
-
-    navigate(`/chat/${chatId}`);
+    setConversation(conversation);
+    navigate(`/chat/${conversation.id}`);
   };
 
   // Check if the message is seen by the user
@@ -47,7 +47,7 @@ const UserList: React.FC<UserListProps> = ({ setUser }) => {
       <Divider />
       {data?.map((conversation) => (
         <Fragment key={conversation.id}>
-          <ListItemButton onClick={handleClick(conversation.id)}>
+          <ListItemButton onClick={handleClick(conversation)}>
             <ListItemAvatar>
               <UserAvatar conversation={conversation} />
             </ListItemAvatar>

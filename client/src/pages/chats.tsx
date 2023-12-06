@@ -24,19 +24,15 @@ import CallTwoToneIcon from '@mui/icons-material/CallTwoTone';
 import SendTwoToneIcon from '@mui/icons-material/SendTwoTone';
 import MoodTwoToneIcon from '@mui/icons-material/MoodTwoTone';
 import HighlightOffTwoToneIcon from '@mui/icons-material/HighlightOffTwoTone';
-import default_avatar from '@/assets/images/users/avatar-1.png';
 
 // project imports
-import UserDetails from '@/page-sections/chats/UserDetails';
+import { Conversation } from '@/lib/types';
 import ChatDrawer from '@/page-sections/chats/ChatDrawer';
-import ChatHistory from '@/page-sections/chats/ChatHistory';
-import AvatarStatus from '@/page-sections/chats/AvatarStatus';
 import { openDrawer } from '@/store/slices/menu.slice';
 import MainCard from '@/components/MainCard';
-import Avatar from '@/components/Avatar';
+import LetterAvatar from '@/components/LetterAvatar';
 import { appDrawerWidth as drawerWidth, gridSpacing } from '@/utils/const';
 import { useDispatch } from 'store';
-import { users, chatHistories } from '@/mockData/chat';
 
 // drawer content element
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
@@ -85,8 +81,7 @@ const Chats: FC = () => {
     setOpenChatDrawer(!matchDownSM);
   }, [matchDownSM]);
 
-  const [user, setUser] = useState<any>(users[0]);
-  const [data, setData] = useState<any[]>(chatHistories);
+  const [conversation, setConversation] = useState<Conversation | null>(null);
 
   useEffect(() => {
     // hide left drawer when email app opens
@@ -99,13 +94,13 @@ const Chats: FC = () => {
   const handleOnSend = () => {
     const d = new Date();
     setMessage('');
-    const newMessage = {
-      from: 'User1',
-      to: user?.name,
-      text: message,
-      time: d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    };
-    setData((prevState) => [...prevState, newMessage]);
+    // const newMessage = {
+    //   from: 'User1',
+    //   to: conversation?.name,
+    //   text: message,
+    //   time: d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    // };
+    // setData((prevState) => [...prevState, newMessage]);
   };
 
   const handleEnter = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -136,15 +131,13 @@ const Chats: FC = () => {
     setAnchorElEmoji(undefined);
   };
 
-  if (!user) return <Typography>Loading...</Typography>;
-
   return (
     <Box sx={{ display: 'flex', height: '100%' }}>
       {/* Chat Drawer Section */}
       <ChatDrawer
         openChatDrawer={openChatDrawer}
         handleDrawerOpen={handleDrawerOpen}
-        setUser={setUser}
+        setConversation={setConversation}
       />
 
       {/* Main Chat Section */}
@@ -177,7 +170,7 @@ const Chats: FC = () => {
                         sx={{ flexWrap: 'nowrap' }}
                       >
                         <Grid item>
-                          <Avatar alt={user?.name} src={default_avatar} />
+                          <LetterAvatar name={conversation?.name ?? ''} />
                         </Grid>
                         <Grid item sm zeroMinWidth>
                           <Grid container spacing={0} alignItems="center">
@@ -186,15 +179,19 @@ const Chats: FC = () => {
                                 component="div"
                                 sx={{ fontSize: '16px', fontWeight: 600 }}
                               >
-                                {user?.name}{' '}
-                                {user?.online_status && (
-                                  <AvatarStatus status={user?.online_status} />
-                                )}
+                                {/* TODO: feat add to backend */}
+                                {conversation?.name}{' '}
+                                {/* {conversation?.online_status && (
+                                  <AvatarStatus
+                                    status={conversation?.online_status}
+                                  />
+                                )} */}
                               </Typography>
                             </Grid>
                             <Grid item xs={12}>
                               <Typography variant="caption">
-                                Last seen {user?.lastMessage}
+                                {/* TODO: feat add to backend */}
+                                Last seen {'2 hours ago'}
                               </Typography>
                             </Grid>
                           </Grid>
@@ -308,7 +305,7 @@ const Chats: FC = () => {
                   <HighlightOffTwoToneIcon />
                 </IconButton>
               </Box>
-              <UserDetails user={user} />
+              {/* <UserDetails user={user} /> */}
             </Grid>
           )}
         </Grid>
