@@ -1,5 +1,5 @@
 import { FC, MouseEvent, KeyboardEvent, useEffect, useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { useParams, Outlet } from 'react-router-dom';
 import Picker from 'emoji-picker-react';
 
 import { useTheme, styled } from '@mui/material/styles';
@@ -33,7 +33,8 @@ import { openDrawer } from '@/store/slices/menu.slice';
 import MainCard from '@/components/MainCard';
 import LetterAvatar from '@/components/LetterAvatar';
 import { appDrawerWidth as drawerWidth, gridSpacing } from '@/utils/const';
-import { useDispatch } from 'store';
+import { useDispatch, useSelector } from 'store';
+import { useSendMessageMutation } from '@/store/services/chat.service';
 
 // drawer content element
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
@@ -59,6 +60,8 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
 );
 
 const Chats: FC = () => {
+  const { user } = useSelector((state) => state.auth);
+
   const theme = useTheme();
   const matchDownSM = useMediaQuery(theme.breakpoints.down('lg'));
 
@@ -91,16 +94,14 @@ const Chats: FC = () => {
 
   // handle new message form
   const [message, setMessage] = useState<string>('');
+
+  const { chatId } = useParams<{ chatId: string }>();
+  const [sendMessage, { isLoading }] = useSendMessageMutation();
+
   const handleOnSend = () => {
-    const d = new Date();
+    if (!chatId) return;
     setMessage('');
-    // const newMessage = {
-    //   from: 'User1',
-    //   to: conversation?.name,
-    //   text: message,
-    //   time: d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    // };
-    // setData((prevState) => [...prevState, newMessage]);
+    sendMessage({ conversationId: chatId, messageText: message });
   };
 
   const handleEnter = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -273,6 +274,7 @@ const Chats: FC = () => {
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
                         onKeyPress={handleEnter}
+                        disabled={isLoading}
                       />
                     </Grid>
                     <Grid item>
@@ -285,6 +287,7 @@ const Chats: FC = () => {
                         color="primary"
                         onClick={handleOnSend}
                         size="large"
+                        disabled={isLoading}
                       >
                         <SendTwoToneIcon />
                       </IconButton>

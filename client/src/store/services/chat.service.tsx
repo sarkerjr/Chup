@@ -5,17 +5,29 @@ import { baseQueryWithToken } from '../utils';
 export const chatApi = createApi({
   reducerPath: 'chat',
   baseQuery: baseQueryWithToken,
-  tagTypes: ['Chats'],
+  tagTypes: ['Conversations', 'Messages'],
   endpoints: (builder) => ({
     readChats: builder.query<any, void>({
       query: () => 'api/conversation',
-      providesTags: ['Chats'],
+      providesTags: ['Conversations'],
     }),
     readMessages: builder.query<any, string>({
       query: (chatId) => `api/message/${chatId}`,
-      providesTags: ['Chats'],
+      providesTags: ['Messages'],
+    }),
+    sendMessage: builder.mutation<any, any>({
+      query: ({ conversationId, messageText }) => ({
+        url: 'api/message',
+        method: 'POST',
+        body: { conversationId, messageText },
+      }),
+      invalidatesTags: ['Conversations', 'Messages'],
     }),
   }),
 });
 
-export const { useReadChatsQuery, useReadMessagesQuery } = chatApi;
+export const {
+  useReadChatsQuery,
+  useReadMessagesQuery,
+  useSendMessageMutation,
+} = chatApi;
