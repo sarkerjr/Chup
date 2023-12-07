@@ -29,7 +29,7 @@
     "react-redux": "^8.1.2",
     "react-router-dom": "^6.16.0",
     "redux": "^4.2.1",
-    "socket.io-client": "^4.5.4",
+    "socket.io-client": "^4.7.2",
     "styled-components": "^5.3.6",
     "vite-tsconfig-paths": "^4.2.1",
     "zod": "^3.22.4"
