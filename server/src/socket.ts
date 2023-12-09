@@ -19,13 +19,9 @@ const setupSocket = (server: any) => {
   io.use(authSocketMiddleware);
 
   io.on('connection', (socket) => {
-    socket.on('newTestMessage', (data) => {
-      console.log('newTestMessage', data);
-    });
-
     handleConnectionEvents(socket);
 
-    handleMessageEvents(socket);
+    handleMessageEvents(socket, io.sockets);
   });
 
   // Socket.IO Admin UI
