@@ -21,7 +21,7 @@ const setupSocket = (server: any) => {
   io.on('connection', (socket) => {
     handleConnectionEvents(socket);
 
-    handleMessageEvents(socket, io.sockets);
+    handleMessageEvents(socket);
   });
 
   // Socket.IO Admin UI
