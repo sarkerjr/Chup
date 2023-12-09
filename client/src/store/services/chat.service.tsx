@@ -11,10 +11,12 @@ export const chatApi = createApi({
       query: () => 'api/conversation',
       providesTags: ['Conversations'],
     }),
+
     readMessages: builder.query<any, string>({
       query: (chatId) => `api/message/${chatId}`,
       providesTags: ['Messages'],
     }),
+
     sendMessage: builder.mutation<any, any>({
       query: ({ conversationId, messageText }) => ({
         url: 'api/message',

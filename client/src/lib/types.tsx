@@ -37,6 +37,7 @@ export interface JwtToken {
 export interface Message {
   id: string;
   conversationId: string;
+  status?: 'SENDING' | 'DELIVERED' | 'ERROR';
   messageText: string;
   createdAt: string;
   sender: {
@@ -47,6 +48,7 @@ export interface Message {
       lastName: string;
     };
   };
+  localMessageId?: string;
 }
 
 export interface Conversation {
