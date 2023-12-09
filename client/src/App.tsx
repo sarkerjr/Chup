@@ -1,15 +1,15 @@
-// import { useEffect } from 'react';
-// import { io } from 'socket.io-client';
-
-// project imports
 import './App.css';
+import { SocketContext } from './contexts/SocketContext';
 
 import Routes from '@/routes';
-
-// const socket = io('http://localhost:8080');
+import socket from '@/utils/socket';
 
 const App = () => {
-  return <Routes />;
+  return (
+    <SocketContext.Provider value={socket}>
+      <Routes />
+    </SocketContext.Provider>
+  );
 };
 
 export default App;
