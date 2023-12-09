@@ -1,6 +1,14 @@
-import { FC, MouseEvent, KeyboardEvent, useEffect, useState } from 'react';
+import {
+  FC,
+  MouseEvent,
+  KeyboardEvent,
+  useEffect,
+  useState,
+  useRef,
+} from 'react';
 import { useParams, Outlet } from 'react-router-dom';
 import Picker from 'emoji-picker-react';
+import { v4 as uuidv4 } from 'uuid';
 
 import { useTheme, styled } from '@mui/material/styles';
 import {
@@ -32,9 +40,10 @@ import UserDetails from '@/page-sections/chats/UserDetails';
 import { openDrawer } from '@/store/slices/menu.slice';
 import MainCard from '@/components/MainCard';
 import LetterAvatar from '@/components/LetterAvatar';
+import { useSocketEvent } from '@/hooks/useSocketEvent';
 import { appDrawerWidth as drawerWidth, gridSpacing } from '@/utils/const';
 import { useDispatch, useSelector } from 'store';
-import { useSendMessageMutation } from '@/store/services/chat.service';
+import { chatApi } from '@/store/services/chat.service';
 
 // drawer content element
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
@@ -60,8 +69,6 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
 );
 
 const Chats: FC = () => {
-  const { user } = useSelector((state) => state.auth);
-
   const theme = useTheme();
   const matchDownSM = useMediaQuery(theme.breakpoints.down('lg'));
 
@@ -92,16 +99,70 @@ const Chats: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // handle new message form
-  const [message, setMessage] = useState<string>('');
+  // handle new message sending
+  const message = useRef<HTMLInputElement>('');
 
+  const { user } = useSelector((state) => state.auth);
   const { chatId } = useParams<{ chatId: string }>();
-  const [sendMessage, { isLoading }] = useSendMessageMutation();
+  const sendMessage = useSocketEvent('newMessage');
 
   const handleOnSend = () => {
     if (!chatId) return;
-    setMessage('');
-    sendMessage({ conversationId: chatId, messageText: message });
+
+    const localMessageId = uuidv4();
+
+    // update the cache with new message locally
+    if (chatId) {
+      dispatch(
+        chatApi.util.updateQueryData('readMessages', chatId, (draft) => {
+          // Add the new message to the draft data
+          draft.push({
+            messageText: message.current.value,
+            createdAt: new Date(),
+            sender: { id: user?.id },
+            localMessageId,
+            status: 'SENDING',
+          });
+        })
+      );
+    }
+
+    // send message to server and update local message state
+    sendMessage(
+      {
+        conversationId: chatId,
+        messageText: message.current.value,
+        localMessageId,
+      },
+      (response) => {
+        if (response?.status === 'error') {
+          dispatch(
+            chatApi.util.updateQueryData('readMessages', chatId, (draft) => {
+              const message = draft.find(
+                (message) => message.localMessageId === response?.localMessageId
+              );
+
+              if (message) message.status = 'ERROR';
+            })
+          );
+        } else if (response?.status === 'success') {
+          dispatch(
+            chatApi.util.updateQueryData('readMessages', chatId, (draft) => {
+              const message = draft.find(
+                (message) => message.localMessageId === response?.localMessageId
+              );
+
+              if (message) {
+                message.status = 'DELIVERED';
+                message.id = response?.data?.id;
+              }
+            })
+          );
+        }
+      }
+    );
+
+    message.current.value = '';
   };
 
   const handleEnter = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -116,7 +177,7 @@ const Chats: FC = () => {
     _event: MouseEvent<Element, MouseEvent>,
     emojiObject: any
   ) => {
-    setMessage(message + emojiObject.emoji);
+    message.current.value = message.current.value + emojiObject.emoji;
   };
 
   const [anchorElEmoji, setAnchorElEmoji] = useState<HTMLElement | undefined>(
@@ -271,10 +332,11 @@ const Chats: FC = () => {
                       <TextField
                         fullWidth
                         label="Type a Message"
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
+                        inputRef={message}
+                        onChange={(e) =>
+                          (message.current.value = e.target.value)
+                        }
                         onKeyPress={handleEnter}
-                        disabled={isLoading}
                       />
                     </Grid>
                     <Grid item>
@@ -287,7 +349,6 @@ const Chats: FC = () => {
                         color="primary"
                         onClick={handleOnSend}
                         size="large"
-                        disabled={isLoading}
                       >
                         <SendTwoToneIcon />
                       </IconButton>
