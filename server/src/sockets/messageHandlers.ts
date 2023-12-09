@@ -3,8 +3,8 @@ import { Socket } from 'socket.io';
 import messageServices from '@/services/message.services';
 
 // TODO: implement async handler
-export const handleMessageEvents = (socket: Socket, iosocket: any) => {
-  socket.on('newMessage', async (message) => {
+export const handleMessageEvents = (socket: Socket) => {
+  socket.on('newMessage', async (message, callback) => {
     try {
       const newMessage = await messageServices.createMessage(
         socket.data.user.id,
@@ -12,11 +12,19 @@ export const handleMessageEvents = (socket: Socket, iosocket: any) => {
         message.messageText
       );
 
-      console.log('reached here', newMessage);
+      callback({
+        status: 'success',
+        localMessageId: message.localMessageId,
+        data: newMessage,
+      });
 
       socket.to(message.conversationId).emit('newMessage', newMessage);
     } catch (err) {
-      console.log(err);
+      callback({
+        status: 'error',
+        localMessageId: message.localMessageId,
+        data: err,
+      });
     }
   });
 };
