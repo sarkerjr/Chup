@@ -21,6 +21,7 @@ import AvatarStatus from './AvatarStatus';
 import UserAvatar from './UserAvatar';
 import MainCard from '@/components/MainCard';
 import { appDrawerWidth as drawerWidth, gridSpacing } from '@/utils/const';
+import { useSelector } from '@/store';
 
 // assets
 import SearchTwoToneIcon from '@mui/icons-material/SearchTwoTone';
@@ -39,6 +40,8 @@ const ChatDrawer: React.FC<ChatDrawerProps> = ({
   openChatDrawer,
   setConversation,
 }) => {
+  const { user } = useSelector((state) => state.auth);
+
   const theme = useTheme<Theme>();
   const matchDownLG = useMediaQuery(theme.breakpoints.down('lg'));
 
@@ -122,7 +125,7 @@ const ChatDrawer: React.FC<ChatDrawerProps> = ({
                         fontSize="16px"
                         fontWeight="bold"
                       >
-                        Anik Sarker
+                        {`${user?.firstName} ${user?.lastName}`}
                       </Typography>
                     </Grid>
                     <Grid item>
