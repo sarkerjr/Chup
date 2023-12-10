@@ -15,6 +15,7 @@ import {
 import { useTheme, Theme } from '@mui/material/styles';
 
 // project imports
+import { Conversation } from '@/lib/types';
 import UserList from './UserList';
 import AvatarStatus from './AvatarStatus';
 import UserAvatar from './UserAvatar';
@@ -26,12 +27,14 @@ import SearchTwoToneIcon from '@mui/icons-material/SearchTwoTone';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 interface ChatDrawerProps {
+  conversations: Conversation[] | null;
   handleDrawerOpen: () => void;
   openChatDrawer: boolean;
   setConversation: (user: any) => void;
 }
 
 const ChatDrawer: React.FC<ChatDrawerProps> = ({
+  conversations,
   handleDrawerOpen,
   openChatDrawer,
   setConversation,
@@ -185,7 +188,10 @@ const ChatDrawer: React.FC<ChatDrawerProps> = ({
                 minHeight: matchDownLG ? 0 : 520,
               }}
             >
-              <UserList setConversation={setConversation} />
+              <UserList
+                conversations={conversations}
+                setConversation={setConversation}
+              />
             </Box>
           </Box>
         </MainCard>

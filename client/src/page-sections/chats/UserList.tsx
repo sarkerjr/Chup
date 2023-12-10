@@ -1,5 +1,5 @@
-import { Fragment, MouseEvent, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Fragment, MouseEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import {
   Divider,
@@ -18,21 +18,20 @@ import CircleIcon from '@mui/icons-material/Circle';
 import UserAvatar from './UserAvatar';
 import { Conversation } from '@/lib/types';
 import { formatMessageTime } from '@/utils/dayjs';
-import { useSocketEvent } from '@/hooks/useSocketEvent';
 import { useSelector } from '@/store';
-import { useReadChatsQuery } from '@/store/services/chat.service';
 
 interface UserListProps {
+  conversations: Conversation[] | null;
   setConversation: (user: any) => void;
 }
 
-const UserList: React.FC<UserListProps> = ({ setConversation }) => {
+const UserList: React.FC<UserListProps> = ({
+  conversations,
+  setConversation,
+}) => {
   const { user } = useSelector((state) => state.auth);
-  const { data } = useReadChatsQuery();
 
   const navigate = useNavigate();
-
-  const connectToRoom = useSocketEvent('joinRoom');
 
   const handleClick = (conversation: any) => (event: MouseEvent) => {
     event.preventDefault();
@@ -48,8 +47,7 @@ const UserList: React.FC<UserListProps> = ({ setConversation }) => {
   return (
     <List component="nav">
       <Divider />
-      {data?.map((conversation: Conversation) => {
-        connectToRoom(conversation.id);
+      {conversations?.map((conversation: Conversation) => {
         return (
           <Fragment key={conversation.id}>
             <ListItemButton onClick={handleClick(conversation)}>

@@ -43,7 +43,7 @@ import LetterAvatar from '@/components/LetterAvatar';
 import { useSocketEvent } from '@/hooks/useSocketEvent';
 import { appDrawerWidth as drawerWidth, gridSpacing } from '@/utils/const';
 import { useDispatch, useSelector } from 'store';
-import { chatApi } from '@/store/services/chat.service';
+import { useReadChatsQuery, chatApi } from '@/store/services/chat.service';
 
 // drawer content element
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
@@ -73,6 +73,17 @@ const Chats: FC = () => {
   const matchDownSM = useMediaQuery(theme.breakpoints.down('lg'));
 
   const dispatch = useDispatch();
+
+  // fetching conversations
+  const { data: conversations } = useReadChatsQuery();
+
+  // joining conversations to room
+  const connectToRoom = useSocketEvent('joinRoom');
+  useEffect(() => {
+    conversations?.forEach((conversation: Conversation) => {
+      connectToRoom(conversation.id);
+    });
+  }, [conversations]);
 
   // set chat details page open when user is selected from sidebar
   const [emailDetails, setEmailDetails] = useState<boolean>(false);
@@ -197,6 +208,7 @@ const Chats: FC = () => {
     <Box sx={{ display: 'flex', height: '100%' }}>
       {/* Chat Drawer Section */}
       <ChatDrawer
+        conversations={conversations}
         openChatDrawer={openChatDrawer}
         handleDrawerOpen={handleDrawerOpen}
         setConversation={setConversation}
