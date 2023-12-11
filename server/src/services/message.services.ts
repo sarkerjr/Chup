@@ -89,6 +89,7 @@ const getMessages = async (senderId: string, conversationId: string) => {
     select: {
       id: true,
       messageText: true,
+      seenIds: true,
       sender: {
         select: {
           id: true,
@@ -135,10 +136,61 @@ const deleteMessage = async (id: string): Promise<Message | null> => {
   });
 };
 
+const seenMessage = async (
+  id: string,
+  conversationId: string,
+  userId: string
+) => {
+  const conversation = await prisma.conversation.findUnique({
+    where: {
+      id: conversationId,
+    },
+    select: {
+      userIds: true,
+    },
+  });
+
+  if (conversation && !conversation.userIds.includes(userId)) {
+    throw new ApiError(
+      403,
+      'ERR_FORBIDDEN',
+      true,
+      'You are not allowed to view messages from this conversation'
+    );
+  }
+
+  const message = await prisma.message.findUnique({
+    where: {
+      id,
+    },
+    select: {
+      seenIds: true,
+    },
+  });
+
+  if (!message) {
+    throw new ApiError(404, 'ERR_NOT_FOUND', false, 'Message not found');
+  }
+
+  if (!message.seenIds.includes(userId)) {
+    return await prisma.message.update({
+      where: {
+        id,
+      },
+      data: {
+        seenIds: {
+          push: userId,
+        },
+      },
+    });
+  }
+};
+
 export default {
   createMessage,
   getMessage,
   getMessages,
   updateMessage,
   deleteMessage,
+  seenMessage,
 };
