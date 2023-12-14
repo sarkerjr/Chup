@@ -40,6 +40,7 @@ export interface Message {
   status?: 'SENDING' | 'DELIVERED' | 'ERROR';
   messageText: string;
   createdAt: string;
+  seenIds: string[];
   sender: {
     id: string;
     profile: {

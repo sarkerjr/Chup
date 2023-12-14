@@ -27,4 +27,24 @@ export const handleMessageEvents = (socket: Socket) => {
       });
     }
   });
+
+  socket.on('messageSeen', async (message, callback) => {
+    try {
+      const seenMessage = await messageServices.seenMessage(
+        message.id,
+        message.conversationId,
+        socket.data.user.id
+      );
+
+      await callback({
+        status: 'success',
+        data: seenMessage,
+      });
+    } catch (err) {
+      callback({
+        status: 'error',
+        data: err,
+      });
+    }
+  });
 };
