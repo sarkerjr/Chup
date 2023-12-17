@@ -1,4 +1,4 @@
-import { Fragment, useLayoutEffect, useRef } from 'react';
+import { Fragment, useEffect, useLayoutEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { Box, CardContent, Grid } from '@mui/material';
 
@@ -15,9 +15,23 @@ const ChatHistory = () => {
 
   const { user } = useSelector((state) => state.auth);
   const { chatId } = useParams();
-  const { data } = useReadMessagesQuery(chatId!);
+  const { data: messages } = useReadMessagesQuery(chatId!);
 
   const dispatch = useDispatch();
+
+  // update seen message status
+  const messageSeen = useSocketEvent('messageSeen');
+  useEffect(() => {
+    user &&
+      messages?.forEach((message: Message) => {
+        if (
+          message?.sender?.id !== user?.id &&
+          !message?.seenIds?.includes(user?.id)
+        ) {
+          messageSeen({ id: message?.id, conversationId: chatId });
+        }
+      });
+  }, [messages, user]);
 
   // update the cache with new message through socket
   useSocketEvent('newMessage', (newMessage) => {
@@ -51,7 +65,7 @@ const ChatHistory = () => {
       <CardContent>
         <Grid item xs={12}>
           <Grid container spacing={gridSpacing}>
-            {data?.map((message: Message) => (
+            {messages?.map((message: Message) => (
               <Fragment key={message?.id || message?.localMessageId}>
                 {message?.sender?.id === user?.id ? (
                   <Grid item xs={12}>
