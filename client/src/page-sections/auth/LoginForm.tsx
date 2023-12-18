@@ -32,9 +32,7 @@ interface Inputs {
 }
 
 type LoginSchemaType = z.infer<typeof LoginSchema>;
-
 type FieldNames = 'email' | 'password' | 'root';
-
 const defaultValues: LoginSchemaType = {
   email: '',
   password: '',
