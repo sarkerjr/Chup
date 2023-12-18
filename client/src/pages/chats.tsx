@@ -1,23 +1,13 @@
-import {
-  FC,
-  MouseEvent,
-  KeyboardEvent,
-  useEffect,
-  useState,
-  useRef,
-} from 'react';
+import { FC, KeyboardEvent, useEffect, useState, useRef } from 'react';
 import { useParams, Outlet } from 'react-router-dom';
-import Picker from 'emoji-picker-react';
 import { v4 as uuidv4 } from 'uuid';
 
 import { useTheme, styled } from '@mui/material/styles';
 import {
   Box,
-  ClickAwayListener,
   Divider,
   Grid,
   IconButton,
-  Popper,
   TextField,
   Typography,
   useMediaQuery,
@@ -30,7 +20,6 @@ import ErrorTwoToneIcon from '@mui/icons-material/ErrorTwoTone';
 import VideoCallTwoToneIcon from '@mui/icons-material/VideoCallTwoTone';
 import CallTwoToneIcon from '@mui/icons-material/CallTwoTone';
 import SendTwoToneIcon from '@mui/icons-material/SendTwoTone';
-import MoodTwoToneIcon from '@mui/icons-material/MoodTwoTone';
 import HighlightOffTwoToneIcon from '@mui/icons-material/HighlightOffTwoTone';
 
 // project imports
@@ -183,27 +172,6 @@ const Chats: FC = () => {
     handleOnSend();
   };
 
-  // handle emoji
-  const onEmojiClick = (
-    _event: MouseEvent<Element, MouseEvent>,
-    emojiObject: any
-  ) => {
-    message.current.value = message.current.value + emojiObject.emoji;
-  };
-
-  const [anchorElEmoji, setAnchorElEmoji] = useState<HTMLElement | undefined>(
-    undefined
-  );
-  const handleOnEmojiButtonClick = (event: MouseEvent<HTMLElement>) => {
-    setAnchorElEmoji(anchorElEmoji ? undefined : event?.currentTarget);
-  };
-
-  const emojiOpen = Boolean(anchorElEmoji);
-  const emojiId = emojiOpen ? 'simple-popper' : undefined;
-  const handleCloseEmoji = () => {
-    setAnchorElEmoji(undefined);
-  };
-
   return (
     <Box sx={{ display: 'flex', height: '100%' }}>
       {/* Chat Drawer Section */}
@@ -303,44 +271,7 @@ const Chats: FC = () => {
                 {/* Chat Input */}
                 <Grid item xs={12}>
                   <Grid container spacing={1} alignItems="center">
-                    <Grid item>
-                      <IconButton
-                        ref={anchorElEmoji}
-                        aria-describedby={emojiId}
-                        onClick={handleOnEmojiButtonClick}
-                        size="large"
-                      >
-                        <MoodTwoToneIcon />
-                      </IconButton>
-                      <Popper
-                        id={emojiId}
-                        open={emojiOpen}
-                        anchorEl={anchorElEmoji}
-                        disablePortal
-                        modifiers={[
-                          {
-                            name: 'offset',
-                            options: {
-                              offset: [-20, 20],
-                            },
-                          },
-                        ]}
-                      >
-                        <ClickAwayListener onClickAway={handleCloseEmoji}>
-                          <>
-                            {emojiOpen && (
-                              <MainCard content={false}>
-                                <Picker
-                                  onEmojiClick={onEmojiClick}
-                                  disableAutoFocus
-                                />
-                              </MainCard>
-                            )}
-                          </>
-                        </ClickAwayListener>
-                      </Popper>
-                    </Grid>
-                    <Grid item xs zeroMinWidth>
+                    <Grid item xs zeroMinWidth marginLeft="8px">
                       <TextField
                         fullWidth
                         label="Type a Message"
