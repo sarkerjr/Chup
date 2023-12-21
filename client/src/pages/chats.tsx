@@ -279,7 +279,7 @@ const Chats: FC = () => {
                         onChange={(e) =>
                           (message.current.value = e.target.value)
                         }
-                        onKeyPress={handleEnter}
+                        onKeyDown={handleEnter}
                       />
                     </Grid>
                     <Grid item>
