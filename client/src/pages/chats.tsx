@@ -59,7 +59,8 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
 
 const Chats: FC = () => {
   const theme = useTheme();
-  const matchDownSM = useMediaQuery(theme.breakpoints.down('lg'));
+  const matchDownLG = useMediaQuery(theme.breakpoints.down('lg'));
+  const matchUpMD = useMediaQuery(theme.breakpoints.up('md'));
 
   const dispatch = useDispatch();
 
@@ -75,9 +76,9 @@ const Chats: FC = () => {
   }, [conversations]);
 
   // set chat details page open when user is selected from sidebar
-  const [emailDetails, setEmailDetails] = useState<boolean>(false);
+  const [userDetails, setUserDetails] = useState<boolean>(false);
   const handleUserChange = () => {
-    setEmailDetails((prev) => !prev);
+    setUserDetails((prev) => !prev);
   };
 
   // toggle sidebar
@@ -86,10 +87,10 @@ const Chats: FC = () => {
     setOpenChatDrawer((prevState) => !prevState);
   };
 
-  // close sidebar when widow size below 'md' breakpoint
+  // close sidebar when widow size below 'lg' breakpoint
   useEffect(() => {
-    setOpenChatDrawer(!matchDownSM);
-  }, [matchDownSM]);
+    setOpenChatDrawer(!matchDownLG);
+  }, [matchDownLG]);
 
   const [conversation, setConversation] = useState<Conversation | null>(null);
 
@@ -190,35 +191,38 @@ const Chats: FC = () => {
             xs
             zeroMinWidth
             sx={{
-              display: emailDetails ? { xs: 'none', sm: 'flex' } : 'flex',
+              display: userDetails ? { xs: 'none', sm: 'flex' } : 'flex',
               height: '100%',
             }}
           >
             <MainCard
               sx={{
-                bgcolor: 'grey.50',
+                bgcolor: 'white',
               }}
               contentSX={{ height: '100%' }}
             >
               <Grid container height="100%">
                 {/* Chat Header */}
                 <Grid item xs={12}>
-                  <Grid container alignItems="center" spacing={0.5}>
-                    <Grid item>
+                  <Grid container alignItems="center" marginTop="12px">
+                    <Grid item xs={2} md={1}>
                       <IconButton onClick={handleDrawerOpen} size="large">
                         <MenuRoundedIcon />
                       </IconButton>
                     </Grid>
-                    <Grid item>
+
+                    <Grid item xs={5}>
                       <Grid
                         container
-                        spacing={2}
+                        spacing={1}
                         alignItems="center"
                         sx={{ flexWrap: 'nowrap' }}
                       >
-                        <Grid item>
-                          <LetterAvatar name={conversation?.name ?? ''} />
-                        </Grid>
+                        {matchUpMD && (
+                          <Grid item>
+                            <LetterAvatar name={conversation?.name ?? ''} />
+                          </Grid>
+                        )}
                         <Grid item sm zeroMinWidth>
                           <Grid container spacing={0} alignItems="center">
                             <Grid item xs={12}>
@@ -245,21 +249,26 @@ const Chats: FC = () => {
                         </Grid>
                       </Grid>
                     </Grid>
-                    <Grid item sm zeroMinWidth />
+
+                    {matchUpMD && <Grid item sm zeroMinWidth />}
                     <Grid item>
-                      <IconButton size="large">
-                        <CallTwoToneIcon />
-                      </IconButton>
-                    </Grid>
-                    <Grid item>
-                      <IconButton size="large">
-                        <VideoCallTwoToneIcon />
-                      </IconButton>
-                    </Grid>
-                    <Grid item>
-                      <IconButton onClick={handleUserChange} size="large">
-                        <ErrorTwoToneIcon />
-                      </IconButton>
+                      <Grid container>
+                        <Grid item>
+                          <IconButton size="large">
+                            <CallTwoToneIcon />
+                          </IconButton>
+                        </Grid>
+                        <Grid item>
+                          <IconButton size="large">
+                            <VideoCallTwoToneIcon />
+                          </IconButton>
+                        </Grid>
+                        <Grid item>
+                          <IconButton onClick={handleUserChange} size="large">
+                            <ErrorTwoToneIcon />
+                          </IconButton>
+                        </Grid>
+                      </Grid>
                     </Grid>
                   </Grid>
                   <Divider sx={{ mt: theme.spacing(2) }} />
@@ -303,7 +312,7 @@ const Chats: FC = () => {
           </Grid>
 
           {/* User Details */}
-          {emailDetails && (
+          {userDetails && (
             <Grid item sx={{ margin: { xs: '0 auto', md: 'initial' } }}>
               <Box
                 sx={{

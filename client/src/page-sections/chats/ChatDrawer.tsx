@@ -64,7 +64,7 @@ const ChatDrawer: React.FC<ChatDrawerProps> = ({
     handleCloseRightMenu();
   };
 
-  const drawerBG = 'grey.50';
+  const drawerBG = 'white';
 
   return (
     <Drawer
