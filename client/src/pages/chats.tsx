@@ -101,7 +101,7 @@ const Chats: FC = () => {
   }, []);
 
   // handle new message sending
-  const message = useRef<HTMLInputElement>('');
+  const messageText = useRef<HTMLInputElement>('');
 
   const { user } = useSelector((state) => state.auth);
   const { chatId } = useParams<{ chatId: string }>();
@@ -118,7 +118,7 @@ const Chats: FC = () => {
         chatApi.util.updateQueryData('readMessages', chatId, (draft) => {
           // Add the new message to the draft data
           draft.push({
-            messageText: message.current.value,
+            messageText: messageText.current.value,
             createdAt: new Date(),
             sender: { id: user?.id },
             localMessageId,
@@ -132,7 +132,7 @@ const Chats: FC = () => {
     sendMessage(
       {
         conversationId: chatId,
-        messageText: message.current.value,
+        messageText: messageText.current.value,
         localMessageId,
       },
       (response) => {
@@ -163,7 +163,7 @@ const Chats: FC = () => {
       }
     );
 
-    message.current.value = '';
+    messageText.current.value = '';
   };
 
   const handleEnter = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -284,9 +284,9 @@ const Chats: FC = () => {
                       <TextField
                         fullWidth
                         label="Type a Message"
-                        inputRef={message}
+                        inputRef={messageText}
                         onChange={(e) =>
-                          (message.current.value = e.target.value)
+                          (messageText.current.value = e.target.value)
                         }
                         onKeyDown={handleEnter}
                       />
