@@ -1,3 +1,9 @@
+version: '3.9'
+
+configs:
+  server-env:
+    file: .env
+
 services:
   server:
     build:
@@ -5,11 +11,5 @@ services:
       dockerfile: Dockerfile
       args:
         PORT: ${PORT}
-        JWT_SECRET_KEY: ${JWT_SECRET_KEY}
-        JWT_EXPIRE_TIME: ${JWT_EXPIRE_TIME}
-        SALT_ROUNDS: ${SALT_ROUNDS}
-        NODE_ENV: ${NODE_ENV}
-        LOG_DIR: ${LOG_DIR}
-        DATABASE_URL: ${DATABASE_URL}
     ports:
       - ${PORT}:${PORT}

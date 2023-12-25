@@ -64,3 +64,18 @@ export interface Conversation {
     seenIds: string[];
   };
 }
+
+export interface Profile {
+  id: string;
+  firstName: string;
+  lastName: string;
+  gender: string;
+  phoneNumber: string;
+  profilePhoto: string;
+}
+
+export interface User {
+  id: string;
+  email: string;
+  profile: Profile;
+}

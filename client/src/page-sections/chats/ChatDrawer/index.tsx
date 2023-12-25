@@ -17,8 +17,8 @@ import { useTheme, Theme } from '@mui/material/styles';
 // project imports
 import { Conversation } from '@/lib/types';
 import UserList from './UserList';
-import AvatarStatus from './AvatarStatus';
-import UserAvatar from './UserAvatar';
+import AvatarStatus from '../AvatarStatus';
+import UserAvatar from '../UserAvatar';
 import MainCard from '@/components/MainCard';
 import { appDrawerWidth as drawerWidth, gridSpacing } from '@/utils/const';
 import { useSelector } from '@/store';
@@ -64,7 +64,7 @@ const ChatDrawer: React.FC<ChatDrawerProps> = ({
     handleCloseRightMenu();
   };
 
-  const drawerBG = 'grey.50';
+  const drawerBG = 'white';
 
   return (
     <Drawer

@@ -1,31 +1,19 @@
 import { FC } from 'react';
-import {
-  useTheme,
-  Avatar,
-  Card,
-  CardContent,
-  Grid,
-  Typography,
-} from '@mui/material';
+import { useTheme, Avatar, Grid, Typography } from '@mui/material';
 
-// Import your custom components and assets here
-import AvatarStatus from './AvatarStatus';
+// project imports
 import SubCard from '@/components/SubCard';
 import { gridSpacing } from '@/utils/const';
+import { User } from '@/lib/types';
 
 // assets
-import PinDropTwoToneIcon from '@mui/icons-material/PinDropTwoTone';
+import WcIcon from '@mui/icons-material/Wc';
 import PhoneTwoToneIcon from '@mui/icons-material/PhoneTwoTone';
 import EmailTwoToneIcon from '@mui/icons-material/EmailTwoTone';
-import default_avatar from '@/assets/images/users/avatar-1.png';
+import default_avatar from '@/assets/images/default-avatar.png';
 
 interface UserDetailsProps {
-  user: {
-    name: string;
-    avatar: string;
-    online_status: string;
-    role: string;
-  };
+  user: User;
 }
 
 const UserDetails: FC<UserDetailsProps> = ({ user }) => {
@@ -38,54 +26,42 @@ const UserDetails: FC<UserDetailsProps> = ({ user }) => {
       sx={{ width: '100%', maxWidth: 300, mt: '2px' }}
     >
       <Grid item xs={12}>
-        <Card>
-          <CardContent
-            sx={{
-              textAlign: 'center',
-            }}
-          >
-            <Grid container spacing={1}>
-              <Grid item xs={12}>
-                <Avatar
-                  alt={user?.name}
-                  src={user?.avatar || default_avatar}
-                  sx={{
-                    m: '0 auto',
-                    width: 130,
-                    height: 130,
-                    border: '1px solid',
-                    borderColor: theme.palette.primary.main,
-                    p: 1,
-                    bgcolor: 'transparent',
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <AvatarStatus status={user?.online_status} />
-                <Typography variant="caption" component="div" color="#9e9e9e">
-                  {user?.online_status?.replaceAll('_', ' ')}
-                </Typography>
-              </Grid>
-              <Grid item xs={12}>
-                <Typography
-                  component="div"
-                  sx={{ fontSize: '14px', fontWeight: 600 }}
-                >
-                  {user?.name}
-                </Typography>
-              </Grid>
-              <Grid item xs={12}>
-                <Typography
-                  component="div"
-                  sx={{ fontSize: '14px', color: '#616161' }}
-                >
-                  {user?.role}
-                </Typography>
-              </Grid>
-            </Grid>
-          </CardContent>
-        </Card>
+        <Grid container spacing={1}>
+          <Grid item xs={12}>
+            <Avatar
+              alt={
+                user?.profile
+                  ? `${user?.profile?.firstName} ${user?.profile?.lastName}`
+                  : 'John Doe'
+              }
+              src={user?.profile?.profilePhoto ?? default_avatar}
+              sizes="large"
+              sx={{
+                m: '0 auto',
+                p: 1,
+                width: 130,
+                height: 130,
+                border: '1px solid',
+                borderColor: theme.palette.primary.main,
+                bgcolor: 'transparent',
+              }}
+            />
+          </Grid>
+
+          <Grid item xs={12} textAlign="center">
+            <Typography
+              component="div"
+              sx={{ fontSize: '1rem', fontWeight: 600 }}
+            >
+              {user?.profile
+                ? `${user?.profile?.firstName} $
+              {user?.profile?.lastName}`
+                : 'John Doe'}
+            </Typography>
+          </Grid>
+        </Grid>
       </Grid>
+
       <Grid item xs={12}>
         <SubCard
           sx={{
@@ -96,7 +72,7 @@ const UserDetails: FC<UserDetailsProps> = ({ user }) => {
             <Grid item xs={12}>
               <Typography
                 component="div"
-                sx={{ fontSize: '14px', fontWeight: 600 }}
+                sx={{ fontSize: '1rem', fontWeight: 600 }}
               >
                 Information
               </Typography>
@@ -105,14 +81,14 @@ const UserDetails: FC<UserDetailsProps> = ({ user }) => {
               <Grid container spacing={1}>
                 <Grid item xs={12}>
                   <Typography sx={{ fontSize: '14px', color: '#616161' }}>
-                    <PinDropTwoToneIcon
+                    <WcIcon
                       sx={{
                         verticalAlign: 'sub',
                         fontSize: '1.125rem',
                         mr: 0.625,
                       }}
                     />
-                    Rangpur, Bangladesh.
+                    {user?.profile?.gender ?? 'N/A'}
                   </Typography>
                 </Grid>
                 <Grid item xs={12}>
@@ -124,7 +100,7 @@ const UserDetails: FC<UserDetailsProps> = ({ user }) => {
                         mr: 0.625,
                       }}
                     />
-                    +8801725869541
+                    {user?.profile?.phoneNumber ?? 'N/A'}
                   </Typography>
                 </Grid>
                 <Grid item xs={12}>
@@ -136,7 +112,7 @@ const UserDetails: FC<UserDetailsProps> = ({ user }) => {
                         mr: 0.625,
                       }}
                     />
-                    user@gmail.com
+                    {user?.email ?? 'N/A'}
                   </Typography>
                 </Grid>
               </Grid>

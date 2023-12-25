@@ -30,7 +30,6 @@ import { RegisterSchema } from '@/lib/validation';
 import { useRegisterUserMutation } from '@/store/services/auth.service';
 
 type RegisterSchemaType = z.infer<typeof RegisterSchema>;
-
 type FieldNames =
   | 'email'
   | 'password'
@@ -40,7 +39,6 @@ type FieldNames =
   | 'gender'
   | 'phoneNumber'
   | 'confirmPassword';
-
 const defaultValues: RegisterInputType = {
   email: '',
   password: '',
