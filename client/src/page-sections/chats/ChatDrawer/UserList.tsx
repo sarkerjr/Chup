@@ -15,7 +15,7 @@ import {
 import CircleIcon from '@mui/icons-material/Circle';
 
 // project imports
-import UserAvatar from './UserAvatar';
+import UserAvatar from '../UserAvatar';
 import { Conversation } from '@/lib/types';
 import { formatMessageTime } from '@/utils/dayjs';
 import { useSelector } from '@/store';
