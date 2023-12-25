@@ -1,7 +1,4 @@
-import { Avatar, Badge } from '@mui/material';
-
-// assets
-import default_avatar from '@/assets/images/users/avatar-1.png';
+import { Badge } from '@mui/material';
 
 // project imports
 import AvatarStatus from './AvatarStatus';
